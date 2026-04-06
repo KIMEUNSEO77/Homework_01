@@ -28,7 +28,7 @@ public:
 	static void SetViewport(CViewport* pViewport) {
 		m_pViewport = pViewport;
 	}
-	static XMFLOAT3 ScreenTransform(XMFLOAT3& xmf3Project);
+	static XMFLOAT3 ScreenTransform(const XMFLOAT3& xmf3Project);
 	static XMFLOAT3 Project(XMFLOAT3& xmf3Model);
 };
 

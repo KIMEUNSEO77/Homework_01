@@ -28,7 +28,7 @@ XMFLOAT3 CGraphicsPipeline::Project(XMFLOAT3& xmf3Model)
 
 // 투영 좌표계의 점을 화면 변환을 수행
 // 화면 변환은 카메라의 정보(뷰포트) 필요
-XMFLOAT3 CGraphicsPipeline::ScreenTransform(XMFLOAT3& xmf3Project)
+XMFLOAT3 CGraphicsPipeline::ScreenTransform(const XMFLOAT3& xmf3Project)
 {
 	XMFLOAT3 f3Screen = xmf3Project;
 

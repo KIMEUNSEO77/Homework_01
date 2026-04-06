@@ -56,45 +56,106 @@ void Draw2DLine(HDC hDCFrameBuffer, XMFLOAT3& f3PreviousProject, XMFLOAT3& f3Cur
 	::LineTo(hDCFrameBuffer, (long)f3Current.x, (long)f3Current.y);
 }
 
+// 면으로 그리는 함수
+float EdgeFunction(const XMFLOAT3& a, const XMFLOAT3& b, float x, float y)
+{
+	return (x - a.x) * (b.y - a.y) - (y - a.y) * (b.x - a.x);
+}
+
+bool IsPointInTriangle(float x, float y, const XMFLOAT3& v0, const XMFLOAT3& v1, const XMFLOAT3& v2)
+{
+	float e0 = EdgeFunction(v0, v1, x, y);
+	float e1 = EdgeFunction(v1, v2, x, y);
+	float e2 = EdgeFunction(v2, v0, x, y);
+
+	return ((e0 >= 0.0f) && (e1 >= 0.0f) && (e2 >= 0.0f)) ||
+		((e0 <= 0.0f) && (e1 <= 0.0f) && (e2 <= 0.0f));
+}
+
+void FillTriangle2D(HDC hDCFrameBuffer,
+	const XMFLOAT3& f3Projected0,
+	const XMFLOAT3& f3Projected1,
+	const XMFLOAT3& f3Projected2,
+	COLORREF color)
+{
+	// 투영 좌표계 -> 화면 좌표계
+	const XMFLOAT3& v0 = CGraphicsPipeline::ScreenTransform(f3Projected0);
+	const XMFLOAT3& v1 = CGraphicsPipeline::ScreenTransform(f3Projected1);
+	const XMFLOAT3& v2 = CGraphicsPipeline::ScreenTransform(f3Projected2);
+
+	int minX = (int)floorf(min(v0.x, min(v1.x, v2.x)));
+	int maxX = (int)ceilf(max(v0.x, max(v1.x, v2.x)));
+	int minY = (int)floorf(min(v0.y, min(v1.y, v2.y)));
+	int maxY = (int)ceilf(max(v0.y, max(v1.y, v2.y)));
+
+	for (int y = minY; y <= maxY; y++)
+	{
+		for (int x = minX; x <= maxX; x++)
+		{
+			float px = (float)x + 0.5f;
+			float py = (float)y + 0.5f;
+
+			if (IsPointInTriangle(px, py, v0, v1, v2))
+			{
+				::SetPixel(hDCFrameBuffer, x, y, color);
+			}
+		}
+	}
+}
+
 void CMesh::Render(HDC hDCFrameBuffer)
 {
-	XMFLOAT3 f3InitialProject, f3PreviousProject;
-
-	bool bPreviousInside = false, bInitialInside = false, 
-		bCurrentInside = false, bIntersectInside = false;
-
 	for (int j = 0; j < m_nPolygons; j++)
 	{
 		int nVertices = m_ppPolygons[j]->m_nVertices;
 		CVertex* pVertices = m_ppPolygons[j]->m_pVertices;
 
-		// 다각형의 첫 번째 정점을 원근 투영 변환
-		f3PreviousProject = f3InitialProject = CGraphicsPipeline::Project(pVertices[0].m_xmf3Position);
+		// 정점이 3개 미만이면 면을 만들 수 없음
+		if (nVertices < 3) continue;
 
-		// 변환된 점이 투영 사각형에 포함되는 가를 계산
-		bPreviousInside = bInitialInside = (-1.0f <= f3InitialProject.x) && (f3InitialProject.x <= 1.0f) 
-			&& (-1.0f <= f3InitialProject.y) && (f3InitialProject.y <= 1.0f);
+		// polygon의 모든 정점을 투영 좌표계로 미리 변환
+		XMFLOAT3* pProjected = new XMFLOAT3[nVertices];
 
-		// 다각형을 구성하는 모든 정점들을 원근 투영 변환하고 선분으로 렌더링
-		for (int i = 1; i < nVertices; i++)
+		for (int i = 0; i < nVertices; i++)
 		{
-			XMFLOAT3 f3CurrentProject = CGraphicsPipeline::Project(pVertices[i].m_xmf3Position);
-
-			// 변환된 점이 투영 사각형에 포함되는 가 계산
-			bCurrentInside = (-1.0f <= f3CurrentProject.x) &&
-				(f3CurrentProject.x <= 1.0f) && (-1.0f <= f3CurrentProject.y) &&
-				(f3CurrentProject.y <= 1.0f);
-
-			// 변환된 점이 투영 사각형에 포함되면 이전 점과 현재 점을 선분으로 그림
-			if (((0.0f <= f3CurrentProject.z) && (f3CurrentProject.z <= 1.0f)) && ((bCurrentInside || bPreviousInside)))
-				::Draw2DLine(hDCFrameBuffer, f3PreviousProject, f3CurrentProject);
-
-			f3PreviousProject = f3CurrentProject;
-			bPreviousInside = bCurrentInside;
+			pProjected[i] = CGraphicsPipeline::Project(pVertices[i].m_xmf3Position);
 		}
-		// 다각형의 마지막 정점과 다각형의 시작점을 선분으로 그림
-		if (((0.0f <= f3InitialProject.z) && (f3InitialProject.z <= 1.0f)) && ((bInitialInside || bPreviousInside))) 
-			::Draw2DLine(hDCFrameBuffer, f3PreviousProject, f3InitialProject);
+
+		// triangle fan 방식:
+		// (0,1,2), (0,2,3), (0,3,4), ...
+		for (int i = 1; i < nVertices - 1; i++)
+		{
+			XMFLOAT3 f3Projected0 = pProjected[0];
+			XMFLOAT3 f3Projected1 = pProjected[i];
+			XMFLOAT3 f3Projected2 = pProjected[i + 1];
+
+			bool bInside0 =
+				(-1.0f <= f3Projected0.x) && (f3Projected0.x <= 1.0f) &&
+				(-1.0f <= f3Projected0.y) && (f3Projected0.y <= 1.0f) &&
+				(0.0f <= f3Projected0.z) && (f3Projected0.z <= 1.0f);
+
+			bool bInside1 =
+				(-1.0f <= f3Projected1.x) && (f3Projected1.x <= 1.0f) &&
+				(-1.0f <= f3Projected1.y) && (f3Projected1.y <= 1.0f) &&
+				(0.0f <= f3Projected1.z) && (f3Projected1.z <= 1.0f);
+
+			bool bInside2 =
+				(-1.0f <= f3Projected2.x) && (f3Projected2.x <= 1.0f) &&
+				(-1.0f <= f3Projected2.y) && (f3Projected2.y <= 1.0f) &&
+				(0.0f <= f3Projected2.z) && (f3Projected2.z <= 1.0f);
+
+			// 일단 가장 단순하게: 삼각형 3점이 전부 화면 안에 있을 때만 채움
+			if (bInside0 && bInside1 && bInside2)
+			{
+				FillTriangle2D(hDCFrameBuffer,
+					f3Projected0,
+					f3Projected1,
+					f3Projected2,
+					RGB(255, 255, 255));
+			}
+		}
+
+		delete[] pProjected;
 	}
 }
 
