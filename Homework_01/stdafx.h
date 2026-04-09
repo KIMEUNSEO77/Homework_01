@@ -16,6 +16,8 @@
 
 #include <math.h>
 
+#include <cmath>
+
 // 윈도우 클라이언트 영역 크기
 #define FRAME_BUFFER_WIDTH 1280
 #define FRAME_BUFFER_HEIGHT 960
