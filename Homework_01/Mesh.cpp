@@ -153,7 +153,7 @@ void CMesh::Render(HDC hDCFrameBuffer)
 					f3Projected0,
 					f3Projected1,
 					f3Projected2,
-					RGB(255, 255, 255));
+					m_color);
 			}
 		}
 
@@ -166,6 +166,8 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	float fHalfWidth = fWidth * 0.5f;
 	float fHalfHeight = fHeight * 0.5f;
 	float fHalfDepth = fDepth * 0.5f;
+
+	SetColor(RGB(255, 0, 0));   // 메쉬의 색상 지정
 
 	CPolygon* pFrontFace = new CPolygon(4);
 	pFrontFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
@@ -221,6 +223,8 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 	float x1 = fx * 0.2f, y1 = fy * 0.2f, 
 		x2 = fx * 0.1f, y3 = fy * 0.3f, y2 = ((y1 - (fy - y3)) / x1) * x2 + (fy - y3);
 	int i = 0;
+
+	SetColor(RGB(180, 180, 180));   // 메쉬의 색상 지정
 
 	// 비행기 메쉬의 위쪽 면
 	CPolygon* pFace = new CPolygon(3);
