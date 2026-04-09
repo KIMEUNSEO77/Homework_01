@@ -146,7 +146,7 @@ void CMesh::Render(HDC hDCFrameBuffer)
 				(-1.0f <= f3Projected2.y) && (f3Projected2.y <= 1.0f) &&
 				(0.0f <= f3Projected2.z) && (f3Projected2.z <= 1.0f);
 
-			// 일단 가장 단순하게: 삼각형 3점이 전부 화면 안에 있을 때만 채움
+			// 삼각형 3점이 전부 화면 안에 있을 때만 채움
 			if (bInside0 && bInside1 && bInside2)
 			{
 				FillTriangle2D(hDCFrameBuffer,
