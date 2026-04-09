@@ -79,28 +79,30 @@ void FillTriangle2D(HDC hDCFrameBuffer,
 	COLORREF color)
 {
 	// Åõ¿µ ÁÂÇ¥°è -> È­¸é ÁÂÇ¥°è
-	const XMFLOAT3& v0 = CGraphicsPipeline::ScreenTransform(f3Projected0);
-	const XMFLOAT3& v1 = CGraphicsPipeline::ScreenTransform(f3Projected1);
-	const XMFLOAT3& v2 = CGraphicsPipeline::ScreenTransform(f3Projected2);
+	XMFLOAT3 v0 = CGraphicsPipeline::ScreenTransform(f3Projected0);
+	XMFLOAT3 v1 = CGraphicsPipeline::ScreenTransform(f3Projected1);
+	XMFLOAT3 v2 = CGraphicsPipeline::ScreenTransform(f3Projected2);
 
-	int minX = (int)floorf(min(v0.x, min(v1.x, v2.x)));
-	int maxX = (int)ceilf(max(v0.x, max(v1.x, v2.x)));
-	int minY = (int)floorf(min(v0.y, min(v1.y, v2.y)));
-	int maxY = (int)ceilf(max(v0.y, max(v1.y, v2.y)));
-
-	for (int y = minY; y <= maxY; y++)
+	POINT pts[3] =
 	{
-		for (int x = minX; x <= maxX; x++)
-		{
-			float px = (float)x + 0.5f;
-			float py = (float)y + 0.5f;
+		{ (LONG)std::round(v0.x), (LONG)std::round(v0.y) },
+		{ (LONG)std::round(v1.x), (LONG)std::round(v1.y) },
+		{ (LONG)std::round(v2.x), (LONG)std::round(v2.y) }
+	};
 
-			if (IsPointInTriangle(px, py, v0, v1, v2))
-			{
-				::SetPixel(hDCFrameBuffer, x, y, color);
-			}
-		}
-	}
+	HPEN hPen = CreatePen(PS_SOLID, 1, color);
+	HBRUSH hBrush = CreateSolidBrush(color);
+
+	HPEN oldPen = (HPEN)SelectObject(hDCFrameBuffer, hPen);
+	HBRUSH oldBrush = (HBRUSH)SelectObject(hDCFrameBuffer, hBrush);
+
+	Polygon(hDCFrameBuffer, pts, 3);
+
+	SelectObject(hDCFrameBuffer, oldPen);
+	SelectObject(hDCFrameBuffer, oldBrush);
+
+	DeleteObject(hPen);
+	DeleteObject(hBrush);
 }
 
 void CMesh::Render(HDC hDCFrameBuffer)
