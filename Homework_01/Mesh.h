@@ -32,9 +32,14 @@ private:
 	// 폴리곤을 포인터로 저장하기 때문에 이중 포인터를 사용
 	// 다형성, 메모리 관리, 객체 공유 가능한 이유 때문.
 
+	COLORREF m_color = RGB(255, 255, 255);  // 메쉬의 색상
+
 public:
 	void SetPolygon(int nIndex, CPolygon* pPolygon);
 
+	void SetColor(COLORREF color) { m_color = color; }
+	COLORREF GetColor() const { return m_color; }
+	
 	// 메쉬를 렌더링
 	virtual void Render(HDC hDCFrameBuffer);
 };
