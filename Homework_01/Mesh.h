@@ -85,11 +85,8 @@ public:
 	// 다각형(면)을 구성하는 정점들의 리스트
 	int m_nVertices = 0;    // 폴리곤 구성하는 정점 개수
 	CVertex* m_pVertices = nullptr;   // 정점을 저장하는 배열의 주소
-	COLORREF m_color = RGB(255, 255, 255);
 
 	void SetVertex(int nIndex, CVertex vertex);
-	void SetColor(COLORREF color) { m_color = color; }
-	COLORREF GetColor() const { return m_color; }
 };
 
 // 비행기 클래스 선언
