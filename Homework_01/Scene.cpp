@@ -114,11 +114,17 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	CGraphicsPipeline::SetViewProjectTransform(&pCamera->m_xmf4x4ViewProject);
 
 	for (int i = 0; i < m_nObjects; i++)
-		m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
+	{
+		if (m_ppObjects[i] && m_ppObjects[i]->IsActive())
+			m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
+	}
 
 	// 총알도 렌더링 처리
 	for (CBullet* pBullet : m_Bullets)
-		pBullet->Render(hDCFrameBuffer, pCamera);
+	{
+		if (pBullet->IsActive())
+			pBullet->Render(hDCFrameBuffer, pCamera);
+	}
 }
 
 // 총알 생성
