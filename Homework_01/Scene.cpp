@@ -3,6 +3,23 @@
 #include "Scene.h"
 #include "GraphicsPipeline.h"
 
+#include <random>
+
+
+// 랜덤 색상 생성하는 유틸리티 네임스페이스
+namespace ColorUtils
+{
+	COLORREF GetRandomColor()
+	{
+		// C++11 random 라이브러리 사용 (static으로 두어 매번 생성하지 않도록 함)
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		static std::uniform_int_distribution<int> dis(0, 255);
+
+		// R, G, B 각각 0~255 사이의 랜덤 값 반환
+		return RGB(dis(gen), dis(gen), dis(gen));
+	}
+}
 
 void CScene::BuildObjects()
 {
@@ -14,7 +31,7 @@ void CScene::BuildObjects()
 
 	m_ppObjects[0] = new CGameObject();
 	m_ppObjects[0]->SetMesh(pCubeMesh);
-	m_ppObjects[0]->SetColor(RGB(255, 0, 0));
+	m_ppObjects[0]->SetColor(ColorUtils::GetRandomColor());
 	m_ppObjects[0]->SetPosition(-13.5f, 0.0f, +14.0f);
 	m_ppObjects[0]->SetRotationAxis(XMFLOAT3(1.0f, 1.0f, 0.0f));
 	m_ppObjects[0]->SetRotationSpeed(90.0f);
@@ -23,7 +40,7 @@ void CScene::BuildObjects()
 
 	m_ppObjects[1] = new CGameObject();
 	m_ppObjects[1]->SetMesh(pCubeMesh);
-	m_ppObjects[1]->SetColor(RGB(0, 0, 255));
+	m_ppObjects[1]->SetColor(ColorUtils::GetRandomColor());
 	m_ppObjects[1]->SetPosition(+13.5f, 0.0f, +14.0f);
 	m_ppObjects[1]->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 1.0f));
 	m_ppObjects[1]->SetRotationSpeed(180.0f);
@@ -32,7 +49,7 @@ void CScene::BuildObjects()
 
 	m_ppObjects[2] = new CGameObject();
 	m_ppObjects[2]->SetMesh(pCubeMesh);
-	m_ppObjects[2]->SetColor(RGB(0, 255, 0));
+	m_ppObjects[2]->SetColor(ColorUtils::GetRandomColor());
 	m_ppObjects[2]->SetPosition(0.0f, +5.0f, 20.0f);
 	m_ppObjects[2]->SetRotationAxis(XMFLOAT3(1.0f, 0.0f, 1.0f));
 	m_ppObjects[2]->SetRotationSpeed(30.15f);
@@ -41,7 +58,7 @@ void CScene::BuildObjects()
 
 	m_ppObjects[3] = new CGameObject();
 	m_ppObjects[3]->SetMesh(pCubeMesh);
-	m_ppObjects[3]->SetColor(RGB(0, 255, 255));
+	m_ppObjects[3]->SetColor(ColorUtils::GetRandomColor());
 	m_ppObjects[3]->SetPosition(0.0f, 0.0f, 40.0f);
 	m_ppObjects[3]->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_ppObjects[3]->SetRotationSpeed(40.6f);
@@ -50,7 +67,7 @@ void CScene::BuildObjects()
 
 	m_ppObjects[4] = new CGameObject();
 	m_ppObjects[4]->SetMesh(pCubeMesh);
-	m_ppObjects[4]->SetColor(RGB(128, 0, 255));
+	m_ppObjects[4]->SetColor(ColorUtils::GetRandomColor());
 	m_ppObjects[4]->SetPosition(10.0f, 10.0f, 50.0f);
 	m_ppObjects[4]->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 1.0f));
 	m_ppObjects[4]->SetRotationSpeed(50.06f);
