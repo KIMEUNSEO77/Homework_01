@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+static bool bSpacePressed = false;
+
 // 주 윈도우가 생성되면 호출됨
 void CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -156,6 +158,20 @@ void CGameFramework::ProcessInput()
 			else
 				m_pPlayer->Rotate(cyMouseDelta, cxMouseDelta, 0.0f);
 		}	
+	}
+
+	// 총알 발사
+	if (pKeyBuffer[VK_SPACE] & 0xF0)
+	{
+		if (!bSpacePressed)
+		{
+			m_pScene->CreateBullet(m_pPlayer->GetPosition(), m_pPlayer->GetLookVector());
+			bSpacePressed = true;
+		}
+	}
+	else
+	{
+		bSpacePressed = false;
 	}
 
 	// 플레이어를 실제로 이동하고 카메라를 갱신. 마찰력의 영향을 속도 벡터에 적용
