@@ -147,8 +147,15 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	// 총알도 렌더링 처리
 	for (CBullet* pBullet : m_Bullets)
 	{
-		if (pBullet->IsActive())
+		if (pBullet && pBullet->IsActive())
 			pBullet->Render(hDCFrameBuffer, pCamera);
+	}
+
+	// 파편도 렌더링 처리
+	for (CFragment* pFragment : m_Fragments)
+	{
+		if (pFragment && pFragment->IsActive())
+			pFragment->Render(hDCFrameBuffer, pCamera);
 	}
 }
 
