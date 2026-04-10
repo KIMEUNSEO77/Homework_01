@@ -175,7 +175,7 @@ void CScene::CheckBulletCollisions()
 
 			if (distSq <= r * r)
 			{
-				// 충돌!
+				// 충돌
 				pBullet->SetActive(false);
 				pTarget->SetActive(false);
 				break;
