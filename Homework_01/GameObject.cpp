@@ -70,12 +70,18 @@ void CGameObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	{
 		CGraphicsPipeline::SetWorldTransform(&m_xmf4x4World);
 
+		// 오브젝트의 색상으로 펜(선)과 브러시(면)를 모두 생성
 		HPEN hPen = ::CreatePen(PS_SOLID, 0, m_dwColor);
+		HBRUSH hBrush = ::CreateSolidBrush(m_dwColor);
+
 		HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+		HBRUSH hOldBrush = (HBRUSH)::SelectObject(hDCFrameBuffer, hBrush);
 
 		m_pMesh->Render(hDCFrameBuffer);
 
+		::SelectObject(hDCFrameBuffer, hOldBrush);
 		::SelectObject(hDCFrameBuffer, hOldPen);
+		::DeleteObject(hBrush);
 		::DeleteObject(hPen);
 	}
 }
