@@ -115,12 +115,12 @@ void CGameFramework::ProcessInput()
 	{
 		DWORD dwDirection = 0;
 
-		if (pKeyBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeyBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeyBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
-		if (pKeyBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
-		if (pKeyBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
-		if (pKeyBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+		if ((pKeyBuffer[VK_UP] & 0xF0) || (pKeyBuffer['W'] & 0xF0)) dwDirection |= DIR_FORWARD;
+		if ((pKeyBuffer[VK_DOWN] & 0xF0) || (pKeyBuffer['S'] & 0xF0)) dwDirection |= DIR_BACKWARD;
+		if ((pKeyBuffer[VK_LEFT] & 0xF0) || (pKeyBuffer['A'] & 0xF0)) dwDirection |= DIR_LEFT;
+		if ((pKeyBuffer[VK_RIGHT] & 0xF0) || (pKeyBuffer['D'] & 0xF0)) dwDirection |= DIR_RIGHT;
+		if ((pKeyBuffer[VK_PRIOR] & 0xF0) || (pKeyBuffer['Q'] & 0xF0)) dwDirection |= DIR_UP;
+		if ((pKeyBuffer[VK_NEXT] & 0xF0) || (pKeyBuffer['E'] & 0xF0)) dwDirection |= DIR_DOWN;
 
 		// 키 입력이 있으면 플레이어를 dwDirection 방향으로 이동(실제로는 속도 벡터를 변경)
 		if (dwDirection) m_pPlayer->Move(dwDirection, 0.15f);
