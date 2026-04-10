@@ -96,6 +96,12 @@ void CScene::ReleaseObjects()
 	for (CBullet* pBullet : m_Bullets)
 		delete pBullet;
 	m_Bullets.clear();
+
+	for (CFragment* pFragment : m_Fragments)
+		delete pFragment;
+	m_Fragments.clear();
+
+	if (m_pFragmentMesh) delete m_pFragmentMesh;
 }
 
 void CScene::Animate(float fElapsedTime)
@@ -159,11 +165,13 @@ void CScene::CheckBulletCollisions()
 {
 	for (CBullet* pBullet : m_Bullets)
 	{
+		if (!pBullet) continue;
 		if (!pBullet->IsActive()) continue;
 
 		for (int i = 0; i < m_nObjects; i++)
 		{
 			CGameObject* pTarget = m_ppObjects[i];
+
 			if (!pTarget) continue;
 			if (!pTarget->IsActive()) continue;
 
@@ -179,6 +187,8 @@ void CScene::CheckBulletCollisions()
 
 			if (distSq <= r * r)
 			{
+				CreateFragments(pTarget->GetPosition(), pTarget->m_dwColor);
+
 				// 충돌
 				pBullet->SetActive(false);
 				pTarget->SetActive(false);
@@ -200,4 +210,45 @@ void CScene::RemoveDeadBullets()
 			}
 			return false;       // 유지 대상
 		}), m_Bullets.end());
+}
+
+// 랜덤한 방향 벡터 생성
+XMFLOAT3 CScene::GetRandomDirection()
+{
+	float x = float((rand() % 200) - 100);
+	float y = float((rand() % 200) - 100);
+	float z = float((rand() % 200) - 100);
+
+	XMFLOAT3 xmf3Direction = XMFLOAT3(x, y, z);
+
+	XMVECTOR xmvDirection = XMVector3Normalize(XMLoadFloat3(&xmf3Direction));
+	XMStoreFloat3(&xmf3Direction, xmvDirection);
+
+	return xmf3Direction;
+}
+
+// 파편 생성
+void CScene::CreateFragments(const XMFLOAT3& xmf3Position, DWORD dwColor)
+{
+	for (int i = 0; i < 8; i++)
+	{
+		CFragment* pFragment = new CFragment();
+
+		pFragment->SetMesh(m_pFragmentMesh);
+		pFragment->SetColor(dwColor);
+		pFragment->SetPosition(const_cast<XMFLOAT3&>(xmf3Position));
+
+		XMFLOAT3 xmf3Direction = GetRandomDirection();
+		pFragment->SetMovingDirection(xmf3Direction);
+		pFragment->SetMovingSpeed(5.0f + float(rand() % 6));   // 5 ~ 10
+
+		XMFLOAT3 xmf3RotationAxis = GetRandomDirection();
+		pFragment->SetRotationAxis(xmf3RotationAxis);
+		pFragment->SetRotationSpeed(180.0f + float(rand() % 181));   // 180 ~ 360
+
+		pFragment->SetLifeTime(1.0f + float(rand() % 100) / 100.0f); // 1.0 ~ 1.99
+		pFragment->SetCollisionRadius(0.5f);
+
+		m_Fragments.push_back(pFragment);
+	}
 }
