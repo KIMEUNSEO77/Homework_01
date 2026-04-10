@@ -60,5 +60,7 @@ public:
 	virtual void OnUpdateTransform() {}
 	virtual void Animate(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
+
+	bool IsActive() { return m_bActive; }	
 };
 
