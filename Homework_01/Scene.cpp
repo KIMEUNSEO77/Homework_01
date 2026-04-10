@@ -29,7 +29,7 @@ void CScene::BuildObjects()
 
 	// 파편용 작은 큐브 메쉬도 생성
 	// 파편용 작은 큐브 메쉬
-	m_pFragmentMesh = new CCubeMesh(1.0f, 1.0f, 1.0f);
+	m_pFragmentMesh = new CCubeMesh(0.5f, 0.5f, 0.5f);
 
 	m_nObjects = 5;
 	m_ppObjects = new CGameObject * [m_nObjects];
