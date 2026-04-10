@@ -1,6 +1,6 @@
 // Scene.h
 #pragma once
-
+#include <vector>
 #include "GameObject.h"
 #include "Camera.h"
 #include "Player.h"
