@@ -1,9 +1,11 @@
 // Scene.cpp
+
+#include <random>
+#include <vector>
+
 #include "stdafx.h"
 #include "Scene.h"
 #include "GraphicsPipeline.h"
-
-#include <random>
 
 
 // 랜덤 색상 생성하는 유틸리티 네임스페이스

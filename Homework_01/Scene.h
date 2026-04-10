@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "Player.h"
+#include "Bullet.h"
 
 class CScene
 {
@@ -17,6 +18,8 @@ private:
 	CGameObject** m_ppObjects = nullptr;
 
 	CPlayer* m_pPlayer = nullptr;
+
+	std::vector<CBullet*> m_vBullets;  // 총알 리스트
 
 public:
 	// 게임 객체들을 생성하고 소멸
