@@ -38,6 +38,7 @@ void CScene::BuildObjects()
 	m_ppObjects[0]->SetRotationSpeed(90.0f);
 	m_ppObjects[0]->SetMovingDirection(XMFLOAT3(1.0f, 0.0f, 0.0f));
 	m_ppObjects[0]->SetMovingSpeed(0.5f);
+	m_ppObjects[0]->SetCollisionRadius(2.5f);
 
 	m_ppObjects[1] = new CGameObject();
 	m_ppObjects[1]->SetMesh(pCubeMesh);
@@ -47,6 +48,7 @@ void CScene::BuildObjects()
 	m_ppObjects[1]->SetRotationSpeed(180.0f);
 	m_ppObjects[1]->SetMovingDirection(XMFLOAT3(-1.0f, 0.0f, 0.0f));
 	m_ppObjects[1]->SetMovingSpeed(1.5f);
+	m_ppObjects[1]->SetCollisionRadius(2.5f);
 
 	m_ppObjects[2] = new CGameObject();
 	m_ppObjects[2]->SetMesh(pCubeMesh);
@@ -56,6 +58,7 @@ void CScene::BuildObjects()
 	m_ppObjects[2]->SetRotationSpeed(30.15f);
 	m_ppObjects[2]->SetMovingDirection(XMFLOAT3(1.0f, -1.0f, 0.0f));
 	m_ppObjects[2]->SetMovingSpeed(0.0f);
+	m_ppObjects[2]->SetCollisionRadius(2.5f);
 
 	m_ppObjects[3] = new CGameObject();
 	m_ppObjects[3]->SetMesh(pCubeMesh);
@@ -65,6 +68,7 @@ void CScene::BuildObjects()
 	m_ppObjects[3]->SetRotationSpeed(40.6f);
 	m_ppObjects[3]->SetMovingDirection(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_ppObjects[3]->SetMovingSpeed(0.0f);
+	m_ppObjects[3]->SetCollisionRadius(2.5f);
 
 	m_ppObjects[4] = new CGameObject();
 	m_ppObjects[4]->SetMesh(pCubeMesh);
@@ -74,6 +78,7 @@ void CScene::BuildObjects()
 	m_ppObjects[4]->SetRotationSpeed(50.06f);
 	m_ppObjects[4]->SetMovingDirection(XMFLOAT3(0.0f, 1.0f, 1.0f));
 	m_ppObjects[4]->SetMovingSpeed(0.0f);
+	m_ppObjects[4]->SetCollisionRadius(2.5f);
 }
 
 void CScene::ReleaseObjects()
@@ -139,6 +144,8 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Dire
 	pBullet->SetDirection(xmf3Direction);
 	pBullet->SetSpeed(50.0f);
 	pBullet->SetRange(200.0f);
+
+	pBullet->SetCollisionRadius(0.5f);  // 총알 반지름 설정
 
 	m_Bullets.push_back(pBullet);
 }
