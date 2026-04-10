@@ -83,7 +83,7 @@ void CGameFramework::BuildObjects()
 	m_pPlayer = new CAirplanePlayer();
 	m_pPlayer->SetPosition(0.0f, 0.0f, 0.0f);
 	m_pPlayer->SetMesh(pAirplaneMesh);
-	m_pPlayer->SetColor(RGB(0, 0, 255));
+	m_pPlayer->SetColor(RGB(100, 100, 255));
 	m_pPlayer->SetCamera(pCamera);
 
 	// 카메라는 플레이어 객체 뒤쪽 위에서 플레이어를 바라봄
@@ -184,7 +184,8 @@ void CGameFramework::FrameAdvance()
 	AnimateObjects();
 
 	// 렌더링을 할 대상 화면(비트맵)을 지움
-	ClearFrameBuffer(RGB(75, 45, 105));
+	// 배경 색상
+	ClearFrameBuffer(RGB(255, 255, 255));
 
 	// 씬을 렌더링
 	CCamera* pCamera = m_pPlayer->GetCamera();
