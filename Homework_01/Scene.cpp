@@ -127,7 +127,7 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 // ÃÑ¾Ë »ý¼º
 void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction)
 {
-	CCubeMesh* pBulletMesh = new CCubeMesh(0.5f, 0.5f, 1.5f);
+	CCubeMesh* pBulletMesh = new CCubeMesh(2.0f, 2.0f, 2.0f);
 
 	CBullet* pBullet = new CBullet();
 	pBullet->SetMesh(pBulletMesh);
