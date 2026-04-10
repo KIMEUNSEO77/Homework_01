@@ -116,11 +116,21 @@ void CScene::Animate(float fElapsedTime)
 			pBullet->Animate(fElapsedTime);
 	}
 
+	// 파편도 애니메이션 처리
+	for (CFragment* pFragment : m_Fragments)
+	{
+		if (pFragment && pFragment->IsActive())
+			pFragment->Animate(fElapsedTime);
+	}
+
 	// 충돌 체크
 	CheckBulletCollisions();
 
 	// 죽은 총알 제거
 	RemoveDeadBullets();
+
+	// 죽은 파편 제거
+	RemoveDeadFragments();
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
