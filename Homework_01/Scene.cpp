@@ -252,3 +252,20 @@ void CScene::CreateFragments(const XMFLOAT3& xmf3Position, DWORD dwColor)
 		m_Fragments.push_back(pFragment);
 	}
 }
+
+// 죽은 파편 처리
+void CScene::RemoveDeadFragments()
+{
+	for (auto it = m_Fragments.begin(); it != m_Fragments.end(); )
+	{
+		if (!(*it)->IsActive())
+		{
+			delete (*it);
+			it = m_Fragments.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
