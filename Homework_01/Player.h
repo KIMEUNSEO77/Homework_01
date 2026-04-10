@@ -38,6 +38,8 @@ public:
 	CCamera* m_pCamera = nullptr;
 
 public:
+	XMFLOAT3 GetPosition() { return m_xmf3Position; }
+	XMFLOAT3 GetLookVector() { return m_xmf3Look; }
 	void SetPosition(float x, float y, float z);
 	void SetRotation(float x, float y, float z);
 
