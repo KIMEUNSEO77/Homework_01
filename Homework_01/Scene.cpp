@@ -99,3 +99,19 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	for (int i = 0; i < m_nObjects; i++)
 		m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
 }
+
+// ÃÑ¾Ë »ý¼º
+void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction)
+{
+	CCubeMesh* pBulletMesh = new CCubeMesh(0.5f, 0.5f, 1.5f);
+
+	CBullet* pBullet = new CBullet();
+	pBullet->SetMesh(pBulletMesh);
+	pBullet->SetColor(RGB(255, 0, 0));
+	pBullet->SetPosition(const_cast<XMFLOAT3&>(xmf3Position));
+	pBullet->SetDirection(xmf3Direction);
+	pBullet->SetSpeed(50.0f);
+	pBullet->SetRange(200.0f);
+
+	m_vBullets.push_back(pBullet);
+}

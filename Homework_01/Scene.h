@@ -32,6 +32,9 @@ public:
 	// 게임 객체들을 렌더링
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 
+	// 총알 생성
+	void CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction);
+
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,
