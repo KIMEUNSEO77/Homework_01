@@ -153,7 +153,7 @@ void CMesh::Render(HDC hDCFrameBuffer)
 					f3Projected0,
 					f3Projected1,
 					f3Projected2,
-					m_color);
+					m_ppPolygons[j]->GetColor());
 			}
 		}
 
@@ -167,9 +167,10 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	float fHalfHeight = fHeight * 0.5f;
 	float fHalfDepth = fDepth * 0.5f;
 
-	SetColor(RGB(255, 0, 0));   // 메쉬의 색상 지정
+	//SetColor(RGB(255, 0, 0));   // 메쉬의 색상 지정
 
 	CPolygon* pFrontFace = new CPolygon(4);
+	pFrontFace->SetColor(RGB(255, 0, 0));
 	pFrontFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
@@ -177,6 +178,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(0, pFrontFace);
 
 	CPolygon* pTopFace = new CPolygon(4);
+	pTopFace->SetColor(RGB(0, 255, 0));
 	pTopFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pTopFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pTopFace->SetVertex(2, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
@@ -184,6 +186,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(1, pTopFace);
 
 	CPolygon* pBackFace = new CPolygon(4);
+	pBackFace->SetColor(RGB(0, 0, 255));
 	pBackFace->SetVertex(0, CVertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(1, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(2, CVertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
@@ -191,6 +194,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(2, pBackFace);
 
 	CPolygon* pBottomFace = new CPolygon(4);
+	pBottomFace->SetColor(RGB(255, 255, 0));
 	pBottomFace->SetVertex(0, CVertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pBottomFace->SetVertex(1, CVertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pBottomFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
@@ -198,6 +202,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(3, pBottomFace);
 
 	CPolygon* pLeftFace = new CPolygon(4);
+	pLeftFace->SetColor(RGB(255, 0, 255));
 	pLeftFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pLeftFace->SetVertex(1, CVertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pLeftFace->SetVertex(2, CVertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
@@ -205,6 +210,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(4, pLeftFace);
 
 	CPolygon* pRightFace = new CPolygon(4);
+	pRightFace->SetColor(RGB(0, 255, 255));
 	pRightFace->SetVertex(0, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pRightFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pRightFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
@@ -224,28 +230,30 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 		x2 = fx * 0.1f, y3 = fy * 0.3f, y2 = ((y1 - (fy - y3)) / x1) * x2 + (fy - y3);
 	int i = 0;
 
-	SetColor(RGB(180, 180, 180));   // 메쉬의 색상 지정
-
 	// 비행기 메쉬의 위쪽 면
 	CPolygon* pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), -fz));
 	pFace->SetVertex(1, CVertex(+x1, -y1, -fz));
 	pFace->SetVertex(2, CVertex(0.0f, 0.0f, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), -fz));
 	pFace->SetVertex(1, CVertex(0.0f, 0.0f, -fz));
 	pFace->SetVertex(2, CVertex(-x1, -y1, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(+x2, +y2, -fz));
 	pFace->SetVertex(1, CVertex(+fx, -y3, -fz));
 	pFace->SetVertex(2, CVertex(+x1, -y1, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(-x2, +y2, -fz));
 	pFace->SetVertex(1, CVertex(-x1, -y1, -fz));
 	pFace->SetVertex(2, CVertex(-fx, -y3, -fz));
@@ -253,24 +261,28 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 
 	// 비행기 메쉬의 아래쪽 면
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), +fz));
 	pFace->SetVertex(1, CVertex(0.0f, 0.0f, +fz));
 	pFace->SetVertex(2, CVertex(+x1, -y1, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), +fz));
 	pFace->SetVertex(1, CVertex(-x1, -y1, +fz));
 	pFace->SetVertex(2, CVertex(0.0f, 0.0f, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(+x2, +y2, +fz));
 	pFace->SetVertex(1, CVertex(+x1, -y1, +fz));
 	pFace->SetVertex(2, CVertex(+fx, -y3, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(-x2, +y2, +fz));
 	pFace->SetVertex(1, CVertex(-fx, -y3, +fz));
 	pFace->SetVertex(2, CVertex(-x1, -y1, +fz));
@@ -278,24 +290,28 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 
 	// 비행기 메쉬의 오른쪽 면
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), -fz));
 	pFace->SetVertex(1, CVertex(0.0f, +(fy + y3), +fz));
 	pFace->SetVertex(2, CVertex(+x2, +y2, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(+x2, +y2, -fz));
 	pFace->SetVertex(1, CVertex(0.0f, +(fy + y3), +fz));
 	pFace->SetVertex(2, CVertex(+x2, +y2, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(+x2, +y2, -fz));
 	pFace->SetVertex(1, CVertex(+x2, +y2, +fz));
 	pFace->SetVertex(2, CVertex(+fx, -y3, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(+fx, -y3, -fz));
 	pFace->SetVertex(1, CVertex(+x2, +y2, +fz));
 	pFace->SetVertex(2, CVertex(+fx, -y3, +fz));
@@ -303,24 +319,28 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 
 	// 비행기 메쉬의 뒤쪽/오른쪽 면
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(+x1, -y1, -fz));
 	pFace->SetVertex(1, CVertex(+fx, -y3, -fz));
 	pFace->SetVertex(2, CVertex(+fx, -y3, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(+x1, -y1, -fz));
 	pFace->SetVertex(1, CVertex(+fx, -y3, +fz));
 	pFace->SetVertex(2, CVertex(+x1, -y1, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, 0.0f, -fz));
 	pFace->SetVertex(1, CVertex(+x1, -y1, -fz));
 	pFace->SetVertex(2, CVertex(+x1, -y1, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, 0.0f, -fz));
 	pFace->SetVertex(1, CVertex(+x1, -y1, +fz));
 	pFace->SetVertex(2, CVertex(0.0f, 0.0f, +fz));
@@ -328,24 +348,28 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 
 	// 비행기 메쉬의 왼쪽 면
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), +fz));
 	pFace->SetVertex(1, CVertex(0.0f, +(fy + y3), -fz));
 	pFace->SetVertex(2, CVertex(-x2, +y2, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(0.0f, +(fy + y3), +fz));
 	pFace->SetVertex(1, CVertex(-x2, +y2, -fz));
 	pFace->SetVertex(2, CVertex(-x2, +y2, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(-x2, +y2, +fz));
 	pFace->SetVertex(1, CVertex(-x2, +y2, -fz));
 	pFace->SetVertex(2, CVertex(-fx, -y3, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(255, 255, 255));
 	pFace->SetVertex(0, CVertex(-x2, +y2, +fz));
 	pFace->SetVertex(1, CVertex(-fx, -y3, -fz));
 	pFace->SetVertex(2, CVertex(-fx, -y3, +fz));
@@ -353,24 +377,28 @@ CAirplaneMesh::CAirplaneMesh(float fWidth, float fHeight, float fDepth) : CMesh(
 
 	// 비행기 메쉬의 뒤쪽/왼쪽 면
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, 0.0f, -fz));
 	pFace->SetVertex(1, CVertex(0.0f, 0.0f, +fz));
 	pFace->SetVertex(2, CVertex(-x1, -y1, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(0.0f, 0.0f, -fz));
 	pFace->SetVertex(1, CVertex(-x1, -y1, +fz));
 	pFace->SetVertex(2, CVertex(-x1, -y1, -fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(-x1, -y1, -fz));
 	pFace->SetVertex(1, CVertex(-x1, -y1, +fz));
 	pFace->SetVertex(2, CVertex(-fx, -y3, +fz));
 	SetPolygon(i++, pFace);
 
 	pFace = new CPolygon(3);
+	pFace->SetColor(RGB(100, 100, 255));
 	pFace->SetVertex(0, CVertex(-x1, -y1, -fz));
 	pFace->SetVertex(1, CVertex(-fx, -y3, +fz));
 	pFace->SetVertex(2, CVertex(-fx, -y3, -fz));
