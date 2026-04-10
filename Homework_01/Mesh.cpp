@@ -5,6 +5,23 @@
 #include "Mesh.h"
 #include "GraphicsPipeline.h"
 
+#include <random>
+
+// 랜덤 색상 생성하는 유틸리티 네임스페이스
+namespace ColorUtils
+{
+	COLORREF GetRandomColor()
+	{
+		// C++11 random 라이브러리 사용 (static으로 두어 매번 생성하지 않도록 함)
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		static std::uniform_int_distribution<int> dis(0, 255);
+
+		// R, G, B 각각 0~255 사이의 랜덤 값 반환
+		return RGB(dis(gen), dis(gen), dis(gen));
+	}
+}
+
 CPolygon::CPolygon(int nVertices)
 {
 	m_nVertices = nVertices;
@@ -167,10 +184,8 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	float fHalfHeight = fHeight * 0.5f;
 	float fHalfDepth = fDepth * 0.5f;
 
-	//SetColor(RGB(255, 0, 0));   // 메쉬의 색상 지정
-
 	CPolygon* pFrontFace = new CPolygon(4);
-	pFrontFace->SetColor(RGB(255, 0, 0));
+	pFrontFace->SetColor(ColorUtils::GetRandomColor());
 	pFrontFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pFrontFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
@@ -178,7 +193,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(0, pFrontFace);
 
 	CPolygon* pTopFace = new CPolygon(4);
-	pTopFace->SetColor(RGB(0, 255, 0));
+	pTopFace->SetColor(ColorUtils::GetRandomColor());
 	pTopFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pTopFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pTopFace->SetVertex(2, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
@@ -186,7 +201,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(1, pTopFace);
 
 	CPolygon* pBackFace = new CPolygon(4);
-	pBackFace->SetColor(RGB(0, 0, 255));
+	pBackFace->SetColor(ColorUtils::GetRandomColor());
 	pBackFace->SetVertex(0, CVertex(-fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(1, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
 	pBackFace->SetVertex(2, CVertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
@@ -194,7 +209,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(2, pBackFace);
 
 	CPolygon* pBottomFace = new CPolygon(4);
-	pBottomFace->SetColor(RGB(255, 255, 0));
+	pBottomFace->SetColor(ColorUtils::GetRandomColor());
 	pBottomFace->SetVertex(0, CVertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pBottomFace->SetVertex(1, CVertex(+fHalfWidth, -fHalfHeight, -fHalfDepth));
 	pBottomFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
@@ -202,7 +217,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(3, pBottomFace);
 
 	CPolygon* pLeftFace = new CPolygon(4);
-	pLeftFace->SetColor(RGB(255, 0, 255));
+	pLeftFace->SetColor(ColorUtils::GetRandomColor());
 	pLeftFace->SetVertex(0, CVertex(-fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pLeftFace->SetVertex(1, CVertex(-fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pLeftFace->SetVertex(2, CVertex(-fHalfWidth, -fHalfHeight, -fHalfDepth));
@@ -210,7 +225,7 @@ CCubeMesh::CCubeMesh(float fWidth, float fHeight, float fDepth) : CMesh(6)
 	SetPolygon(4, pLeftFace);
 
 	CPolygon* pRightFace = new CPolygon(4);
-	pRightFace->SetColor(RGB(0, 255, 255));
+	pRightFace->SetColor(ColorUtils::GetRandomColor());
 	pRightFace->SetVertex(0, CVertex(+fHalfWidth, +fHalfHeight, -fHalfDepth));
 	pRightFace->SetVertex(1, CVertex(+fHalfWidth, +fHalfHeight, +fHalfDepth));
 	pRightFace->SetVertex(2, CVertex(+fHalfWidth, -fHalfHeight, +fHalfDepth));
