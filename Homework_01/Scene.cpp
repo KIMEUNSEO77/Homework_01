@@ -204,7 +204,7 @@ void CScene::CheckBulletCollisions()
 
 			if (distSq <= r * r)
 			{
-				CreateFragments(pTarget->GetPosition(), pTarget->m_dwColor);
+				CreateFragments(pTarget->GetPosition(), pBullet->m_dwColor);
 
 				// 충돌
 				pBullet->SetActive(false);
