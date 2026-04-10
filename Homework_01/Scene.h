@@ -37,6 +37,8 @@ public:
 
 	// 충돌 체크 함수
 	void CheckBulletCollisions();
+	// 죽은 총알 처리
+	void RemoveDeadBullets();
 
 
 	// 윈도우 메시지(키보드, 마우스)를 처리

@@ -95,20 +95,17 @@ void CScene::Animate(float fElapsedTime)
 		m_ppObjects[i]->Animate(fElapsedTime);	
 
 	// 총알도 애니메이션 처리
-	for (auto it = m_Bullets.begin(); it != m_Bullets.end(); )
+	for (CBullet* pBullet : m_Bullets)
 	{
-		(*it)->Animate(fElapsedTime);
-
-		if (!(*it)->IsActive())
-		{
-			delete (*it);
-			it = m_Bullets.erase(it);
-		}
-		else
-		{
-			++it;
-		}
+		if (pBullet->IsActive())
+			pBullet->Animate(fElapsedTime);
 	}
+
+	// 충돌 체크
+	CheckBulletCollisions();
+
+	// 죽은 총알 제거
+	RemoveDeadBullets();
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -172,4 +169,18 @@ void CScene::CheckBulletCollisions()
 			}
 		}
 	}
+}
+
+// 죽은 총알 제거
+void CScene::RemoveDeadBullets()
+{
+	m_Bullets.erase(std::remove_if(m_Bullets.begin(), m_Bullets.end(),
+		[](CBullet* pBullet) {
+			if (!pBullet->IsActive())
+			{
+				delete pBullet; // 메모리 해제
+				return true;    // 제거 대상
+			}
+			return false;       // 유지 대상
+		}), m_Bullets.end());
 }
