@@ -84,9 +84,9 @@ void CScene::ReleaseObjects()
 	if (m_ppObjects) delete[] m_ppObjects;
 
 	// ÃÑ¾Ëµµ ¼Ò¸ê Ã³¸®
-	for (CBullet* pBullet : m_vBullets)
+	for (CBullet* pBullet : m_Bullets)
 		delete pBullet;
-	m_vBullets.clear();
+	m_Bullets.clear();
 }
 
 void CScene::Animate(float fElapsedTime)
@@ -95,14 +95,14 @@ void CScene::Animate(float fElapsedTime)
 		m_ppObjects[i]->Animate(fElapsedTime);	
 
 	// ÃÑ¾Ëµµ ¾Ö´Ï¸ÞÀÌ¼Ç Ã³¸®
-	for (auto it = m_vBullets.begin(); it != m_vBullets.end(); )
+	for (auto it = m_Bullets.begin(); it != m_Bullets.end(); )
 	{
 		(*it)->Animate(fElapsedTime);
 
 		if (!(*it)->IsActive())
 		{
 			delete (*it);
-			it = m_vBullets.erase(it);
+			it = m_Bullets.erase(it);
 		}
 		else
 		{
@@ -120,7 +120,7 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 		m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
 
 	// ÃÑ¾Ëµµ ·»´õ¸µ Ã³¸®
-	for (CBullet* pBullet : m_vBullets)
+	for (CBullet* pBullet : m_Bullets)
 		pBullet->Render(hDCFrameBuffer, pCamera);
 }
 
@@ -137,5 +137,5 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Dire
 	pBullet->SetSpeed(50.0f);
 	pBullet->SetRange(200.0f);
 
-	m_vBullets.push_back(pBullet);
+	m_Bullets.push_back(pBullet);
 }

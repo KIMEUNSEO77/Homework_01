@@ -19,7 +19,7 @@ private:
 
 	CPlayer* m_pPlayer = nullptr;
 
-	std::vector<CBullet*> m_vBullets;  // 총알 리스트
+	std::vector<CBullet*> m_Bullets;  // 총알 리스트
 
 public:
 	// 게임 객체들을 생성하고 소멸
