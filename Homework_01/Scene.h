@@ -35,6 +35,9 @@ public:
 	// 총알 생성
 	void CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction);
 
+	// 충돌 체크 함수
+	void CheckBulletCollisions();
+
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,

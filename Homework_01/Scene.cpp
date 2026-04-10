@@ -1,4 +1,4 @@
-// Scene.cpp
+ï»¿// Scene.cpp
 
 #include <random>
 
@@ -7,24 +7,24 @@
 #include "GraphicsPipeline.h"
 
 
-// ·£´ı »ö»ó »ı¼ºÇÏ´Â À¯Æ¿¸®Æ¼ ³×ÀÓ½ºÆäÀÌ½º
+// ëœë¤ ìƒ‰ìƒ ìƒì„±í•˜ëŠ” ìœ í‹¸ë¦¬í‹° ë„¤ì„ìŠ¤í˜ì´ìŠ¤
 namespace ColorUtils
 {
 	COLORREF GetRandomColor()
 	{
-		// C++11 random ¶óÀÌºê·¯¸® »ç¿ë (staticÀ¸·Î µÎ¾î ¸Å¹ø »ı¼ºÇÏÁö ¾Êµµ·Ï ÇÔ)
+		// C++11 random ë¼ì´ë¸ŒëŸ¬ë¦¬ ì‚¬ìš© (staticìœ¼ë¡œ ë‘ì–´ ë§¤ë²ˆ ìƒì„±í•˜ì§€ ì•Šë„ë¡ í•¨)
 		static std::random_device rd;
 		static std::mt19937 gen(rd());
 		static std::uniform_int_distribution<int> dis(0, 255);
 
-		// R, G, B °¢°¢ 0~255 »çÀÌÀÇ ·£´ı °ª ¹İÈ¯
+		// R, G, B ê°ê° 0~255 ì‚¬ì´ì˜ ëœë¤ ê°’ ë°˜í™˜
 		return RGB(dis(gen), dis(gen), dis(gen));
 	}
 }
 
 void CScene::BuildObjects()
 {
-	// Á÷À°¸éÃ¼ ¸Ş½¬¸¦ »ı¼º
+	// ì§ìœ¡ë©´ì²´ ë©”ì‰¬ë¥¼ ìƒì„±
 	CCubeMesh* pCubeMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
 
 	m_nObjects = 5;
@@ -83,7 +83,7 @@ void CScene::ReleaseObjects()
 
 	if (m_ppObjects) delete[] m_ppObjects;
 
-	// ÃÑ¾Ëµµ ¼Ò¸ê Ã³¸®
+	// ì´ì•Œë„ ì†Œë©¸ ì²˜ë¦¬
 	for (CBullet* pBullet : m_Bullets)
 		delete pBullet;
 	m_Bullets.clear();
@@ -94,7 +94,7 @@ void CScene::Animate(float fElapsedTime)
 	for (int i = 0; i < m_nObjects; i++)
 		m_ppObjects[i]->Animate(fElapsedTime);	
 
-	// ÃÑ¾Ëµµ ¾Ö´Ï¸ŞÀÌ¼Ç Ã³¸®
+	// ì´ì•Œë„ ì• ë‹ˆë©”ì´ì…˜ ì²˜ë¦¬
 	for (auto it = m_Bullets.begin(); it != m_Bullets.end(); )
 	{
 		(*it)->Animate(fElapsedTime);
@@ -119,12 +119,12 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	for (int i = 0; i < m_nObjects; i++)
 		m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
 
-	// ÃÑ¾Ëµµ ·»´õ¸µ Ã³¸®
+	// ì´ì•Œë„ ë Œë”ë§ ì²˜ë¦¬
 	for (CBullet* pBullet : m_Bullets)
 		pBullet->Render(hDCFrameBuffer, pCamera);
 }
 
-// ÃÑ¾Ë »ı¼º
+// ì´ì•Œ ìƒì„±
 void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction)
 {
 	CCubeMesh* pBulletMesh = new CCubeMesh(2.0f, 2.0f, 2.0f);
@@ -138,4 +138,38 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Dire
 	pBullet->SetRange(200.0f);
 
 	m_Bullets.push_back(pBullet);
+}
+
+// ì¶©ëŒ ì²´í¬
+void CScene::CheckBulletCollisions()
+{
+	for (CBullet* pBullet : m_Bullets)
+	{
+		if (!pBullet->IsActive()) continue;
+
+		for (int i = 0; i < m_nObjects; i++)
+		{
+			CGameObject* pTarget = m_ppObjects[i];
+			if (!pTarget) continue;
+			if (!pTarget->IsActive()) continue;
+
+			XMFLOAT3 a = pBullet->GetPosition();
+			XMFLOAT3 b = pTarget->GetPosition();
+
+			float dx = a.x - b.x;
+			float dy = a.y - b.y;
+			float dz = a.z - b.z;
+
+			float distSq = dx * dx + dy * dy + dz * dz;
+			float r = pBullet->GetCollisionRadius() + pTarget->GetCollisionRadius();
+
+			if (distSq <= r * r)
+			{
+				// ì¶©ëŒ!
+				pBullet->SetActive(false);
+				pTarget->SetActive(false);
+				break;
+			}
+		}
+	}
 }
