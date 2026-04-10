@@ -27,6 +27,10 @@ void CScene::BuildObjects()
 	// 직육면체 메쉬를 생성
 	CCubeMesh* pCubeMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
 
+	// 파편용 작은 큐브 메쉬도 생성
+	// 파편용 작은 큐브 메쉬
+	m_pFragmentMesh = new CCubeMesh(1.0f, 1.0f, 1.0f);
+
 	m_nObjects = 5;
 	m_ppObjects = new CGameObject * [m_nObjects];
 

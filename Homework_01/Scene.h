@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Fragment.h"
 
 class CScene
 {
@@ -20,6 +21,9 @@ private:
 	CPlayer* m_pPlayer = nullptr;
 
 	std::vector<CBullet*> m_Bullets;  // 총알 리스트
+
+	CCubeMesh* m_pFragmentMesh = NULL;   // 파편용 작은 큐브 메쉬
+	std::vector<CFragment*> m_Fragments; // 파편 리스트
 
 public:
 	// 게임 객체들을 생성하고 소멸
@@ -39,6 +43,13 @@ public:
 	void CheckBulletCollisions();
 	// 죽은 총알 처리
 	void RemoveDeadBullets();
+
+	// 랜덤한 방향 벡터 생성
+	XMFLOAT3 GetRandomDirection();
+	// 파편 생성
+	void CreateFragments(const XMFLOAT3& xmf3Position, DWORD dwColor);
+	// 죽은 파편 처리
+	void RemoveDeadFragments();
 
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
