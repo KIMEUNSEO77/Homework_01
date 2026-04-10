@@ -1,7 +1,6 @@
 // Scene.cpp
 
 #include <random>
-#include <vector>
 
 #include "stdafx.h"
 #include "Scene.h"
@@ -81,23 +80,48 @@ void CScene::ReleaseObjects()
 {
 	for (int i = 0; i < m_nObjects; i++) 
 		if (m_ppObjects[i]) delete m_ppObjects[i];
+
 	if (m_ppObjects) delete[] m_ppObjects;
+
+	// ÃÑ¾Ëµµ ¼Ò¸ê Ã³¸®
+	for (CBullet* pBullet : m_vBullets)
+		delete pBullet;
+	m_vBullets.clear();
 }
 
 void CScene::Animate(float fElapsedTime)
 {
 	for (int i = 0; i < m_nObjects; i++)
 		m_ppObjects[i]->Animate(fElapsedTime);	
+
+	// ÃÑ¾Ëµµ ¾Ö´Ï¸ÞÀÌ¼Ç Ã³¸®
+	for (auto it = m_vBullets.begin(); it != m_vBullets.end(); )
+	{
+		(*it)->Animate(fElapsedTime);
+
+		if (!(*it)->IsActive())
+		{
+			delete (*it);
+			it = m_vBullets.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 {
-
 	CGraphicsPipeline::SetViewport(&pCamera->m_Viewport);
 	CGraphicsPipeline::SetViewProjectTransform(&pCamera->m_xmf4x4ViewProject);
 
 	for (int i = 0; i < m_nObjects; i++)
 		m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
+
+	// ÃÑ¾Ëµµ ·»´õ¸µ Ã³¸®
+	for (CBullet* pBullet : m_vBullets)
+		pBullet->Render(hDCFrameBuffer, pCamera);
 }
 
 // ÃÑ¾Ë »ý¼º
