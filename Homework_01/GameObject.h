@@ -32,6 +32,7 @@ public:
 	// 게임 객체의 회전축을 나타내는 벡터
 	XMFLOAT3 m_xmf3RotationAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	float m_fRotationSpeed = 0.0f;
+
 	float m_fCollisionRadius = 1.0f;   // 충돌 반지름
 	
 public:
@@ -63,6 +64,9 @@ public:
 	virtual void OnUpdateTransform() {}
 	virtual void Animate(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
+
+	void SetCollisionRadius(float fRadius) { m_fCollisionRadius = fRadius; }
+	float GetCollisionRadius() const { return m_fCollisionRadius; }
 
 	bool IsActive() { return m_bActive; }	
 };
