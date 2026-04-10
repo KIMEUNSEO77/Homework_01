@@ -1,4 +1,4 @@
-// GameObject.cpp: implementation of the CGameObject class.
+// GameObject.cpp
 
 
 #include "stdafx.h"
