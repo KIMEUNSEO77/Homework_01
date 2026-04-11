@@ -169,9 +169,14 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Dire
 	pBullet->SetSpeed(50.0f);
 	pBullet->SetRange(200.0f);
 
+	pBullet->SetVerticalVelocity(10.0f); // 처음에 위로 살짝 뜨기
+	pBullet->SetGravity(-20.0f);         // 중력
+
 	pBullet->SetCollisionRadius(0.5f);  // 총알 반지름 설정
 
 	m_Bullets.push_back(pBullet);
+
+	pBulletMesh->Release();
 }
 
 // 충돌 체크
@@ -282,7 +287,7 @@ void CScene::CreateEnemy()
 	pEnemy->SetColor(ColorUtils::GetRandomColor());
 
 	// 랜덤 위치 생성
-	XMFLOAT3 pos = GetRandomPosition(-30.0f, 30.0f, -10.0f, 10.0f, 50.0f, 70.0f);
+	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -20.0f, 20.0f, 50.0f, 70.0f);
 	pEnemy->SetPosition(pos);
 
 	pEnemy->SetRotationAxis(GetRandomDirection());
