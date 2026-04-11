@@ -97,6 +97,25 @@ void CScene::Animate(float fElapsedTime)
 			pObject->Animate(fElapsedTime);
 	}
 
+	// Enemy 발사 처리
+	for (CGameObject* pObject : m_Objects)
+	{
+		if (!pObject || !pObject->IsActive()) continue;
+
+		CEnemyObject* pEnemy = dynamic_cast<CEnemyObject*>(pObject);
+		if (!pEnemy) continue;
+
+		if (pEnemy->ShouldFireBullet())
+		{
+			XMFLOAT3 xmf3MuzzlePosition = pEnemy->GetMuzzleWorldPosition();
+			XMFLOAT3 xmf3Direction = pEnemy->GetLookVector();
+
+			CreateBullet(xmf3MuzzlePosition, xmf3Direction);
+
+			pEnemy->ResetFireBullet();
+		}
+	}
+
 	// 총알도 애니메이션 처리
 	for (CBullet* pBullet : m_Bullets)
 	{

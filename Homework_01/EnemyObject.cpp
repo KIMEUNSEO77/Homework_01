@@ -10,24 +10,9 @@ void CEnemyObject::Animate(float fElapsedTime)
 	// 기본 이동/회전 처리
 	CGameObject::Animate(fElapsedTime);
 
-	// 플레이어 추적 (간단 버전)
-	if (m_pPlayer)
-	{
-		XMFLOAT3 playerPos = m_pPlayer->GetPosition();
-		XMFLOAT3 myPos = GetPosition();
-
-		XMFLOAT3 dir = XMFLOAT3(
-			playerPos.x - myPos.x,
-			playerPos.y - myPos.y,
-			playerPos.z - myPos.z
-		);
-
-		SetMovingDirection(dir);
-		SetMovingSpeed(2.0f);
-	}
-
 	// 공격 타이머 
 	m_fAttackElapsed += fElapsedTime;
+
 	if (m_fAttackElapsed >= m_fAttackInterval)
 	{
 		m_bFireBullet = true;
@@ -90,4 +75,18 @@ void CEnemyObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	::SelectObject(hDCFrameBuffer, hOldPen);
 	::DeleteObject(hBrush);
 	::DeleteObject(hPen);
+}
+
+XMFLOAT3 CEnemyObject::GetLookVector() const
+{
+	XMFLOAT3 look(
+		m_xmf4x4World._31,
+		m_xmf4x4World._32,
+		m_xmf4x4World._33
+	);
+
+	XMVECTOR xmvLook = XMVector3Normalize(XMLoadFloat3(&look));
+	XMStoreFloat3(&look, xmvLook);
+
+	return look;
 }
