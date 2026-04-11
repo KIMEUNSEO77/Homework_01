@@ -78,17 +78,3 @@ public:
 	virtual ~CAirplaneMesh() {}
 };
 
-// 적 클래스 선언
-class CEnemyMesh : public CMesh
-{
-public:
-	CEnemyMesh();
-	virtual ~CEnemyMesh();
-
-	virtual void Render(HDC hDCFrameBuffer) override;
-
-private:
-	CCubeMesh* m_pBodyMesh = nullptr;  // 몸통
-	CCubeMesh* m_pFrontMesh = nullptr; // 앞부분(공격 부분)
-};
-
