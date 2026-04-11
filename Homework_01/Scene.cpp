@@ -195,7 +195,7 @@ void CScene::CheckBulletCollisions()
 
 			if (bulletSphere.Intersects(targetSphere))
 			{
-				CreateFragments(pTarget->GetPosition(), pTarget->m_dwColor);
+				CreateFragments(pTarget->GetPosition(), pBullet->m_dwColor);
 
 				pBullet->SetActive(false);
 				pTarget->SetActive(false);
