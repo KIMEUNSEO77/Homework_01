@@ -7,9 +7,6 @@
 
 void CEnemyObject::Animate(float fElapsedTime)
 {
-	// 기본 이동/회전 처리
-	//CGameObject::Animate(fElapsedTime);
-
 	UpdateLookAtPlayer();
 
 	// 공격 타이머 

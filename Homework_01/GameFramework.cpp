@@ -165,7 +165,9 @@ void CGameFramework::ProcessInput()
 	{
 		if (!bSpacePressed)
 		{
-			m_pScene->CreateBullet(m_pPlayer->GetPosition(), m_pPlayer->GetLookVector());
+			m_pScene->CreateBullet(m_pPlayer->GetPosition(), 
+				m_pPlayer->GetLookVector(),		
+				RGB(100, 100, 255));
 			bSpacePressed = true;
 		}
 	}

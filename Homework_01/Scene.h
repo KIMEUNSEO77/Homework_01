@@ -43,7 +43,9 @@ public:
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 
 	// 총알 생성
-	void CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction);
+	void CreateBullet(const XMFLOAT3& xmf3Position, 
+		const XMFLOAT3& xmf3Direction,
+		DWORD dwColor);
 
 	// 충돌 체크 함수
 	void CheckBulletCollisions();

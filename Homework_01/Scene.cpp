@@ -110,7 +110,7 @@ void CScene::Animate(float fElapsedTime)
 			XMFLOAT3 xmf3Position = pEnemy->GetMuzzleWorldPosition();
 			XMFLOAT3 xmf3Direction = pEnemy->GetLookVector();
 
-			CreateBullet(xmf3Position, xmf3Direction);
+			CreateBullet(xmf3Position, xmf3Direction, RGB(255, 0, 0));
 
 			pEnemy->ResetFireBullet();
 		}
@@ -176,13 +176,15 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 }
 
 // 총알 생성
-void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Direction)
+void CScene::CreateBullet(const XMFLOAT3& xmf3Position, 
+	const XMFLOAT3& xmf3Direction,
+	DWORD dwColor)
 {
 	CCubeMesh* pBulletMesh = new CCubeMesh(2.0f, 2.0f, 2.0f);
 
 	CBullet* pBullet = new CBullet();
 	pBullet->SetMesh(pBulletMesh);
-	pBullet->SetColor(RGB(255, 0, 0));
+	pBullet->SetColor(dwColor);
 	pBullet->SetPosition(xmf3Position);
 	pBullet->SetDirection(xmf3Direction);
 	pBullet->SetSpeed(50.0f);
@@ -215,7 +217,7 @@ void CScene::CheckBulletCollisions()
 
 			if (bulletSphere.Intersects(targetSphere))
 			{
-				CreateFragments(pTarget->GetPosition(), pBullet->m_dwColor);
+				CreateFragments(pTarget->GetPosition(), pTarget->m_dwColor);
 
 				pBullet->SetActive(false);
 				pTarget->SetActive(false);
@@ -308,9 +310,6 @@ void CScene::CreateEnemy()
 	// 랜덤 위치 생성
 	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -20.0f, 20.0f, 50.0f, 70.0f);
 	pEnemy->SetPosition(pos);
-
-	pEnemy->SetRotationAxis(GetRandomDirection());
-	pEnemy->SetRotationSpeed(0.0f);
 
 	pEnemy->SetCollisionRadius(2.5f);
 
