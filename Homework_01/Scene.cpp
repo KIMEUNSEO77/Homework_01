@@ -171,9 +171,8 @@ void CScene::CheckBulletCollisions()
 
 		BoundingSphere bulletSphere = pBullet->GetBoundingSphere();
 
-		for (int i = 0; i < m_nObjects; i++)
+		for (CGameObject* pTarget : m_Objects)
 		{
-			CGameObject* pTarget = m_ppObjects[i];
 			if (!pTarget || !pTarget->IsActive()) continue;
 
 			BoundingSphere targetSphere = pTarget->GetBoundingSphere();
