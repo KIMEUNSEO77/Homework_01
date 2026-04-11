@@ -30,7 +30,7 @@ void CEnemyObject::Animate(float fElapsedTime)
 	m_fAttackElapsed += fElapsedTime;
 	if (m_fAttackElapsed >= m_fAttackInterval)
 	{
-		// Attack(); 나중에 구현
+		m_bFireBullet = true;
 		m_fAttackElapsed = 0.0f;
 	}
 }
