@@ -260,3 +260,26 @@ void CScene::RemoveDeadFragments()
 		}
 	}
 }
+
+// 적 생성
+void CScene::CreateEnemy()
+{
+	CEnemyObject* pEnemy = new CEnemyObject();
+
+	pEnemy->SetMesh(m_pEnemyMesh);
+	pEnemy->SetColor(RGB(255, 50, 50));
+
+	// 랜덤 위치 생성
+	XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -5.0f, 10.0f, 20.0f, 60.0f);
+	pEnemy->SetPosition(pos);
+
+	pEnemy->SetRotationAxis(GetRandomDirection());
+	pEnemy->SetRotationSpeed(30.0f);
+
+	pEnemy->SetCollisionRadius(2.5f);
+
+	// 플레이어 연결 (추적용)
+	pEnemy->SetPlayer(m_pPlayer);
+
+	m_Objects.push_back(pEnemy);
+}

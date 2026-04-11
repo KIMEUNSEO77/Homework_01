@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Fragment.h"
+#include "EnemyObject.h"
 
 class CScene
 {
@@ -23,6 +24,12 @@ private:
 
 	CCubeMesh* m_pFragmentMesh = NULL;   // 파편용 작은 큐브 메쉬
 	std::vector<CFragment*> m_Fragments; // 파편 리스트
+
+	CCubeMesh* m_pEnemyMesh = NULL;      // 적 객체용 큐브 메쉬
+
+	// 적 객체 스폰 타이머
+	float m_fEnemySpawnElapsed = 0.0f;
+	float m_fEnemySpawnInterval = 5.0f;
 
 public:
 	// 게임 객체들을 생성하고 소멸
@@ -51,6 +58,9 @@ public:
 	void CreateFragments(const XMFLOAT3& xmf3Position, DWORD dwColor);
 	// 죽은 파편 처리
 	void RemoveDeadFragments();
+
+	// 적 생성
+	void CreateEnemy();
 
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
