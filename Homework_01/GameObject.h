@@ -34,6 +34,10 @@ public:
 	float m_fRotationSpeed = 0.0f;
 
 	float m_fCollisionRadius = 1.0f;   // 충돌 반지름
+
+protected:
+	// BoundingSphere
+	BoundingSphere m_xmBoundingSphere = BoundingSphere(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	
 public:
 	XMFLOAT3 GetPosition() { return XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43); }
@@ -65,8 +69,12 @@ public:
 	virtual void Animate(float fElapsedTime);
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 
-	void SetCollisionRadius(float fRadius) { m_fCollisionRadius = fRadius; }
+	void SetCollisionRadius(float fRadius);
 	float GetCollisionRadius() const { return m_fCollisionRadius; }
+
+	// BoundingSphere 생성
+	BoundingSphere GetBoundingSphere() const { return m_xmBoundingSphere; }
+	void UpdateBoundingSphere();
 
 	bool IsActive() { return m_bActive; }	
 };

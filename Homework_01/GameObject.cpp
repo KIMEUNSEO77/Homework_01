@@ -16,6 +16,8 @@ void CGameObject::SetPosition(float x, float y, float z)
 	m_xmf4x4World._41 = x;
 	m_xmf4x4World._42 = y;
 	m_xmf4x4World._43 = z;
+
+	UpdateBoundingSphere();
 }
 
 void CGameObject::SetPosition(XMFLOAT3& xmf3Position)
@@ -23,6 +25,20 @@ void CGameObject::SetPosition(XMFLOAT3& xmf3Position)
 	m_xmf4x4World._41 = xmf3Position.x;
 	m_xmf4x4World._42 = xmf3Position.y;
 	m_xmf4x4World._43 = xmf3Position.z;
+
+	UpdateBoundingSphere();
+}
+
+// 게임 객체의 위치가 변경될 때마다 BoundingSphere의 중심도 업데이트
+void CGameObject::UpdateBoundingSphere()
+{
+	m_xmBoundingSphere.Center = GetPosition();
+}
+
+void CGameObject::SetCollisionRadius(float fRadius)
+{
+	m_xmBoundingSphere.Radius = fRadius;
+	UpdateBoundingSphere();
 }
 
 void CGameObject::SetMovingDirection(const XMFLOAT3& xmf3MovingDirection)
