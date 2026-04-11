@@ -29,6 +29,6 @@ public:
 		m_pViewport = pViewport;
 	}
 	static XMFLOAT3 ScreenTransform(const XMFLOAT3& xmf3Project);
-	static XMFLOAT3 Project(XMFLOAT3& xmf3Model);
+	static XMFLOAT3 Project(const XMFLOAT3& xmf3Model);
 };
 

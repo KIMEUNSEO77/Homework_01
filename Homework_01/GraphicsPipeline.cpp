@@ -12,7 +12,7 @@ CViewport* CGraphicsPipeline::m_pViewport = NULL;
 // 월드 변환은 게임 객체의 정보(위치, 방향) 필요
 // 카메라 변환은 카메라의 정보(위치, 방향) 필요
 // 원근 투영 변환은 카메라의 정보(시야각, 종횡비) 필요
-XMFLOAT3 CGraphicsPipeline::Project(XMFLOAT3& xmf3Model)
+XMFLOAT3 CGraphicsPipeline::Project(const XMFLOAT3& xmf3Model)
 {
 	XMMATRIX xmmtxModelToProject =
 		XMMatrixMultiply(XMLoadFloat4x4(m_pxmf4x4World),

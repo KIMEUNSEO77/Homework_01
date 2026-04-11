@@ -6,6 +6,43 @@
 #include "Scene.h"
 #include "GraphicsPipeline.h"
 
+// 축 그리는 함수
+void DrawLine3D(HDC hDCFrameBuffer,
+	const XMFLOAT3& p0,
+	const XMFLOAT3& p1,
+	COLORREF color)
+{
+	XMFLOAT3 proj0 = CGraphicsPipeline::Project(p0);
+	XMFLOAT3 proj1 = CGraphicsPipeline::Project(p1);
+
+	XMFLOAT3 screen0 = CGraphicsPipeline::ScreenTransform(proj0);
+	XMFLOAT3 screen1 = CGraphicsPipeline::ScreenTransform(proj1);
+
+	HPEN hPen = ::CreatePen(PS_SOLID, 0, color);
+	HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+
+	::MoveToEx(hDCFrameBuffer, (int)screen0.x, (int)screen0.y, NULL);
+	::LineTo(hDCFrameBuffer, (int)screen1.x, (int)screen1.y);
+
+	::SelectObject(hDCFrameBuffer, hOldPen);
+	::DeleteObject(hPen);
+}
+
+// 월드 좌표계의 축을 그리는 함수
+void DrawWorldAxis(HDC hDCFrameBuffer, float fLength)
+{
+	XMFLOAT4X4 identity = Matrix4x4::Identity();
+	CGraphicsPipeline::SetWorldTransform(&identity);
+
+	XMFLOAT3 origin(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 xAxis(fLength, 0.0f, 0.0f);
+	XMFLOAT3 yAxis(0.0f, fLength, 0.0f);
+	XMFLOAT3 zAxis(0.0f, 0.0f, fLength);
+
+	DrawLine3D(hDCFrameBuffer, origin, xAxis, RGB(255, 0, 0));
+	DrawLine3D(hDCFrameBuffer, origin, yAxis, RGB(0, 255, 0));
+	DrawLine3D(hDCFrameBuffer, origin, zAxis, RGB(0, 0, 255));
+}
 
 // 랜덤 색상 생성하는 유틸리티 네임스페이스
 namespace ColorUtils
@@ -173,6 +210,9 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 		if (pFragment && pFragment->IsActive())
 			pFragment->Render(hDCFrameBuffer, pCamera);
 	}
+
+	// 월드 축
+	DrawWorldAxis(hDCFrameBuffer, 10.0f);
 }
 
 // 총알 생성
