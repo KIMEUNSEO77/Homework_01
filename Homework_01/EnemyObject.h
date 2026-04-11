@@ -27,5 +27,8 @@ public:
 
 	bool ShouldFireBullet() const { return m_bFireBullet; }
 	void ResetFireBullet() { m_bFireBullet = false; }
+
+	// 플레이어를 바라보도록
+	void UpdateLookAtPlayer();
 };
 
