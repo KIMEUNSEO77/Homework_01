@@ -6,42 +6,36 @@
 #include "Scene.h"
 #include "GraphicsPipeline.h"
 
-// 축 그리는 함수
-void DrawLine3D(HDC hDCFrameBuffer,
-	const XMFLOAT3& p0,
-	const XMFLOAT3& p1,
-	COLORREF color)
+// 축 그리는 함수 (2D)
+void DrawLine2D(HDC hDCFrameBuffer, int x0, int y0, int x1, int y1, COLORREF color)
 {
-	XMFLOAT3 proj0 = CGraphicsPipeline::Project(p0);
-	XMFLOAT3 proj1 = CGraphicsPipeline::Project(p1);
-
-	XMFLOAT3 screen0 = CGraphicsPipeline::ScreenTransform(proj0);
-	XMFLOAT3 screen1 = CGraphicsPipeline::ScreenTransform(proj1);
-
 	HPEN hPen = ::CreatePen(PS_SOLID, 0, color);
 	HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
 
-	::MoveToEx(hDCFrameBuffer, (int)screen0.x, (int)screen0.y, NULL);
-	::LineTo(hDCFrameBuffer, (int)screen1.x, (int)screen1.y);
+	::MoveToEx(hDCFrameBuffer, x0, y0, NULL);
+	::LineTo(hDCFrameBuffer, x1, y1);
 
 	::SelectObject(hDCFrameBuffer, hOldPen);
 	::DeleteObject(hPen);
 }
 
-// 월드 좌표계의 축을 그리는 함수
-void DrawWorldAxis(HDC hDCFrameBuffer, float fLength)
+void DrawScreenAxis(HDC hDCFrameBuffer, const XMFLOAT4X4& world, int centerX, int centerY, float length)
 {
-	XMFLOAT4X4 identity = Matrix4x4::Identity();
-	CGraphicsPipeline::SetWorldTransform(&identity);
+	XMFLOAT3 right(world._11, world._12, world._13);
+	XMFLOAT3 up(world._21, world._22, world._23);
+	XMFLOAT3 look(world._31, world._32, world._33);
 
-	XMFLOAT3 origin(0.0f, 0.0f, 0.0f);
-	XMFLOAT3 xAxis(fLength, 0.0f, 0.0f);
-	XMFLOAT3 yAxis(0.0f, fLength, 0.0f);
-	XMFLOAT3 zAxis(0.0f, 0.0f, fLength);
+	auto DrawAxis = [&](const XMFLOAT3& axis, COLORREF color)
+		{
+			int x = (int)(centerX + axis.x * length);
+			int y = (int)(centerY - axis.y * length - axis.z * length * 0.5f);
 
-	DrawLine3D(hDCFrameBuffer, origin, xAxis, RGB(255, 0, 0));
-	DrawLine3D(hDCFrameBuffer, origin, yAxis, RGB(0, 255, 0));
-	DrawLine3D(hDCFrameBuffer, origin, zAxis, RGB(0, 0, 255));
+			DrawLine2D(hDCFrameBuffer, centerX, centerY, x, y, color);
+		};
+
+	DrawAxis(right, RGB(255, 0, 0));   // X
+	DrawAxis(up, RGB(0, 255, 0));   // Y
+	DrawAxis(look, RGB(0, 0, 255));   // Z
 }
 
 // 랜덤 색상 생성하는 유틸리티 네임스페이스
@@ -211,8 +205,11 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 			pFragment->Render(hDCFrameBuffer, pCamera);
 	}
 
-	// 월드 축
-	DrawWorldAxis(hDCFrameBuffer, 10.0f);
+	// 화면 고정 축
+	if (m_pPlayer)
+	{
+		DrawScreenAxis(hDCFrameBuffer, m_pPlayer->m_xmf4x4World, 80, 80, 40.0f);
+	}
 }
 
 // 총알 생성
