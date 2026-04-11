@@ -100,7 +100,7 @@ void CEnemyObject::UpdateLookAtPlayer()
 
 	XMFLOAT3 xmf3Look(
 		xmf3PlayerPosition.x - xmf3MyPosition.x,
-		0.0f, // 수평 회전만 하도록 y는 제거
+		xmf3PlayerPosition.y - xmf3MyPosition.y,
 		xmf3PlayerPosition.z - xmf3MyPosition.z
 	);
 
