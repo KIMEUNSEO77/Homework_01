@@ -52,7 +52,7 @@ void CScene::BuildObjects()
 		pObject->SetMesh(pCubeMesh);
 		pObject->SetColor(ColorUtils::GetRandomColor());
 
-		XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -10.0f, 10.0f, 10.0f, 60.0f);
+		XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -10.0f, 10.0f, 40.0f, 60.0f);
 		pObject->SetPosition(pos);
 
 		XMFLOAT3 rotAxis = GetRandomDirection();
@@ -282,7 +282,7 @@ void CScene::CreateEnemy()
 	pEnemy->SetColor(ColorUtils::GetRandomColor());
 
 	// 랜덤 위치 생성
-	XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -10.0f, 10.0f, 50.0f, 50.0f);
+	XMFLOAT3 pos = GetRandomPosition(-30.0f, 30.0f, -10.0f, 10.0f, 50.0f, 70.0f);
 	pEnemy->SetPosition(pos);
 
 	pEnemy->SetRotationAxis(GetRandomDirection());
