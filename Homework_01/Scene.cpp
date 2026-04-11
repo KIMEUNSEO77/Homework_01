@@ -40,6 +40,9 @@ void CScene::BuildObjects()
 	// 파편용 작은 큐브 메쉬도 생성
 	m_pFragmentMesh = new CCubeMesh(0.5f, 0.5f, 0.5f);
 
+	// 적 객체용 큐브 메쉬도 생성
+	m_pEnemyMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
+
 	const int nObjects = 5;
 
 	for (int i = 0; i < nObjects; i++)
@@ -116,6 +119,15 @@ void CScene::Animate(float fElapsedTime)
 
 	// 죽은 파편 제거
 	RemoveDeadFragments();
+
+	// 적 스폰 타이머
+	m_fEnemySpawnElapsed += fElapsedTime;
+	// 적 생성
+	while (m_fEnemySpawnElapsed >= m_fEnemySpawnInterval)
+	{
+		CreateEnemy();
+		m_fEnemySpawnElapsed -= m_fEnemySpawnInterval;
+	}
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -267,14 +279,14 @@ void CScene::CreateEnemy()
 	CEnemyObject* pEnemy = new CEnemyObject();
 
 	pEnemy->SetMesh(m_pEnemyMesh);
-	pEnemy->SetColor(RGB(255, 50, 50));
+	pEnemy->SetColor(ColorUtils::GetRandomColor());
 
 	// 랜덤 위치 생성
-	XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -5.0f, 10.0f, 20.0f, 60.0f);
+	XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -10.0f, 10.0f, 50.0f, 50.0f);
 	pEnemy->SetPosition(pos);
 
 	pEnemy->SetRotationAxis(GetRandomDirection());
-	pEnemy->SetRotationSpeed(30.0f);
+	pEnemy->SetRotationSpeed(0.0f);
 
 	pEnemy->SetCollisionRadius(2.5f);
 
