@@ -88,8 +88,11 @@ void CScene::ReleaseObjects()
 
 void CScene::Animate(float fElapsedTime)
 {
-	for (int i = 0; i < m_nObjects; i++)
-		m_ppObjects[i]->Animate(fElapsedTime);	
+	for (CGameObject* pObject : m_Objects)
+	{
+		if (pObject && pObject->IsActive())
+			pObject->Animate(fElapsedTime);
+	}
 
 	// 총알도 애니메이션 처리
 	for (CBullet* pBullet : m_Bullets)
@@ -120,10 +123,10 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	CGraphicsPipeline::SetViewport(&pCamera->m_Viewport);
 	CGraphicsPipeline::SetViewProjectTransform(&pCamera->m_xmf4x4ViewProject);
 
-	for (int i = 0; i < m_nObjects; i++)
+	for (CGameObject* pObject : m_Objects)
 	{
-		if (m_ppObjects[i] && m_ppObjects[i]->IsActive())
-			m_ppObjects[i]->Render(hDCFrameBuffer, pCamera);
+		if (pObject && pObject->IsActive())
+			pObject->Render(hDCFrameBuffer, pCamera);
 	}
 
 	// 총알도 렌더링 처리
