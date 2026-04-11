@@ -22,75 +22,57 @@ namespace ColorUtils
 	}
 }
 
+// 랜덤 위치 만들기
+XMFLOAT3 CScene::GetRandomPosition(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+{
+	float x = minX + static_cast<float>(rand()) / RAND_MAX * (maxX - minX);
+	float y = minY + static_cast<float>(rand()) / RAND_MAX * (maxY - minY);
+	float z = minZ + static_cast<float>(rand()) / RAND_MAX * (maxZ - minZ);
+
+	return XMFLOAT3(x, y, z);
+}
+
 void CScene::BuildObjects()
 {
 	// 직육면체 메쉬를 생성
 	CCubeMesh* pCubeMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
 
 	// 파편용 작은 큐브 메쉬도 생성
-	// 파편용 작은 큐브 메쉬
 	m_pFragmentMesh = new CCubeMesh(0.5f, 0.5f, 0.5f);
 
-	m_nObjects = 5;
-	m_ppObjects = new CGameObject * [m_nObjects];
+	const int nObjects = 5;
 
-	m_ppObjects[0] = new CGameObject();
-	m_ppObjects[0]->SetMesh(pCubeMesh);
-	m_ppObjects[0]->SetColor(ColorUtils::GetRandomColor());
-	m_ppObjects[0]->SetPosition(-13.5f, 0.0f, +14.0f);
-	m_ppObjects[0]->SetRotationAxis(XMFLOAT3(1.0f, 1.0f, 0.0f));
-	m_ppObjects[0]->SetRotationSpeed(90.0f);
-	m_ppObjects[0]->SetMovingDirection(XMFLOAT3(1.0f, 0.0f, 0.0f));
-	m_ppObjects[0]->SetMovingSpeed(0.5f);
-	m_ppObjects[0]->SetCollisionRadius(2.5f);
+	for (int i = 0; i < nObjects; i++)
+	{
+		CGameObject* pObject = new CGameObject();
 
-	m_ppObjects[1] = new CGameObject();
-	m_ppObjects[1]->SetMesh(pCubeMesh);
-	m_ppObjects[1]->SetColor(ColorUtils::GetRandomColor());
-	m_ppObjects[1]->SetPosition(+13.5f, 0.0f, +14.0f);
-	m_ppObjects[1]->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 1.0f));
-	m_ppObjects[1]->SetRotationSpeed(180.0f);
-	m_ppObjects[1]->SetMovingDirection(XMFLOAT3(-1.0f, 0.0f, 0.0f));
-	m_ppObjects[1]->SetMovingSpeed(1.5f);
-	m_ppObjects[1]->SetCollisionRadius(2.5f);
+		pObject->SetMesh(pCubeMesh);
+		pObject->SetColor(ColorUtils::GetRandomColor());
 
-	m_ppObjects[2] = new CGameObject();
-	m_ppObjects[2]->SetMesh(pCubeMesh);
-	m_ppObjects[2]->SetColor(ColorUtils::GetRandomColor());
-	m_ppObjects[2]->SetPosition(0.0f, +5.0f, 20.0f);
-	m_ppObjects[2]->SetRotationAxis(XMFLOAT3(1.0f, 0.0f, 1.0f));
-	m_ppObjects[2]->SetRotationSpeed(30.15f);
-	m_ppObjects[2]->SetMovingDirection(XMFLOAT3(1.0f, -1.0f, 0.0f));
-	m_ppObjects[2]->SetMovingSpeed(0.0f);
-	m_ppObjects[2]->SetCollisionRadius(2.5f);
+		XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -5.0f, 10.0f, 10.0f, 60.0f);
+		pObject->SetPosition(pos);
 
-	m_ppObjects[3] = new CGameObject();
-	m_ppObjects[3]->SetMesh(pCubeMesh);
-	m_ppObjects[3]->SetColor(ColorUtils::GetRandomColor());
-	m_ppObjects[3]->SetPosition(0.0f, 0.0f, 40.0f);
-	m_ppObjects[3]->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 1.0f));
-	m_ppObjects[3]->SetRotationSpeed(40.6f);
-	m_ppObjects[3]->SetMovingDirection(XMFLOAT3(0.0f, 0.0f, 1.0f));
-	m_ppObjects[3]->SetMovingSpeed(0.0f);
-	m_ppObjects[3]->SetCollisionRadius(2.5f);
+		XMFLOAT3 rotAxis = GetRandomDirection();
+		pObject->SetRotationAxis(rotAxis);
+		pObject->SetRotationSpeed(30.0f + float(rand() % 151));   // 30 ~ 180
 
-	m_ppObjects[4] = new CGameObject();
-	m_ppObjects[4]->SetMesh(pCubeMesh);
-	m_ppObjects[4]->SetColor(ColorUtils::GetRandomColor());
-	m_ppObjects[4]->SetPosition(10.0f, 10.0f, 50.0f);
-	m_ppObjects[4]->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 1.0f));
-	m_ppObjects[4]->SetRotationSpeed(50.06f);
-	m_ppObjects[4]->SetMovingDirection(XMFLOAT3(0.0f, 1.0f, 1.0f));
-	m_ppObjects[4]->SetMovingSpeed(0.0f);
-	m_ppObjects[4]->SetCollisionRadius(2.5f);
+		XMFLOAT3 moveDir = GetRandomDirection();
+		pObject->SetMovingDirection(moveDir);
+		pObject->SetMovingSpeed(float(rand() % 3));   // 0 ~ 2
+
+		pObject->SetCollisionRadius(2.5f);
+
+		m_Objects.push_back(pObject);
+	}
+
+	pCubeMesh->Release();
 }
 
 void CScene::ReleaseObjects()
 {
-	for (int i = 0; i < m_nObjects; i++) 
-		if (m_ppObjects[i]) delete m_ppObjects[i];
-
-	if (m_ppObjects) delete[] m_ppObjects;
+	for (CGameObject* pObject : m_Objects)
+		delete pObject;
+	m_Objects.clear();
 
 	// 총알도 소멸 처리
 	for (CBullet* pBullet : m_Bullets)
