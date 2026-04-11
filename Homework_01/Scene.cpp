@@ -107,10 +107,10 @@ void CScene::Animate(float fElapsedTime)
 
 		if (pEnemy->ShouldFireBullet())
 		{
-			XMFLOAT3 xmf3MuzzlePosition = pEnemy->GetMuzzleWorldPosition();
+			XMFLOAT3 xmf3Position = pEnemy->GetMuzzleWorldPosition();
 			XMFLOAT3 xmf3Direction = pEnemy->GetLookVector();
 
-			CreateBullet(xmf3MuzzlePosition, xmf3Direction);
+			CreateBullet(xmf3Position, xmf3Direction);
 
 			pEnemy->ResetFireBullet();
 		}

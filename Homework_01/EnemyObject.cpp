@@ -8,7 +8,9 @@
 void CEnemyObject::Animate(float fElapsedTime)
 {
 	// 기본 이동/회전 처리
-	CGameObject::Animate(fElapsedTime);
+	//CGameObject::Animate(fElapsedTime);
+
+	UpdateLookAtPlayer();
 
 	// 공격 타이머 
 	m_fAttackElapsed += fElapsedTime;
@@ -89,4 +91,53 @@ XMFLOAT3 CEnemyObject::GetLookVector() const
 	XMStoreFloat3(&look, xmvLook);
 
 	return look;
+}
+
+// 플레이어를 바라보도록
+void CEnemyObject::UpdateLookAtPlayer()
+{
+	if (!m_pPlayer) return;
+
+	XMFLOAT3 xmf3PlayerPosition = m_pPlayer->GetPosition();
+	XMFLOAT3 xmf3MyPosition = GetPosition();
+
+	XMFLOAT3 xmf3Look(
+		xmf3PlayerPosition.x - xmf3MyPosition.x,
+		0.0f, // 수평 회전만 하도록 y는 제거
+		xmf3PlayerPosition.z - xmf3MyPosition.z
+	);
+
+	XMVECTOR xmvLook = XMLoadFloat3(&xmf3Look);
+	xmvLook = XMVector3Normalize(xmvLook);
+	XMStoreFloat3(&xmf3Look, xmvLook);
+
+	// 월드 업 벡터
+	XMFLOAT3 xmf3Up(0.0f, 1.0f, 0.0f);
+
+	// Right = Up x Look
+	XMVECTOR xmvRight = XMVector3Cross(XMLoadFloat3(&xmf3Up), XMLoadFloat3(&xmf3Look));
+	xmvRight = XMVector3Normalize(xmvRight);
+
+	XMFLOAT3 xmf3Right;
+	XMStoreFloat3(&xmf3Right, xmvRight);
+
+	// 다시 Up 보정 = Look x Right
+	XMVECTOR xmvNewUp = XMVector3Cross(XMLoadFloat3(&xmf3Look), XMLoadFloat3(&xmf3Right));
+	xmvNewUp = XMVector3Normalize(xmvNewUp);
+
+	XMFLOAT3 xmf3NewUp;
+	XMStoreFloat3(&xmf3NewUp, xmvNewUp);
+
+	// 회전축 갱신
+	m_xmf4x4World._11 = xmf3Right.x;
+	m_xmf4x4World._12 = xmf3Right.y;
+	m_xmf4x4World._13 = xmf3Right.z;
+
+	m_xmf4x4World._21 = xmf3NewUp.x;
+	m_xmf4x4World._22 = xmf3NewUp.y;
+	m_xmf4x4World._23 = xmf3NewUp.z;
+
+	m_xmf4x4World._31 = xmf3Look.x;
+	m_xmf4x4World._32 = xmf3Look.y;
+	m_xmf4x4World._33 = xmf3Look.z;
 }
