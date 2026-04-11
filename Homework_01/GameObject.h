@@ -40,7 +40,8 @@ protected:
 	BoundingSphere m_xmBoundingSphere = BoundingSphere(XMFLOAT3(0.0f, 0.0f, 0.0f), 1.0f);
 	
 public:
-	XMFLOAT3 GetPosition() { return XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43); }
+	XMFLOAT3 GetPosition() const
+	{ return XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43); }
 
 	void SetMesh(CMesh* pMesh) {
 		m_pMesh = pMesh; 

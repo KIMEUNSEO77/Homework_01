@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "GraphicsPipeline.h"
 #include "EnemyObject.h"
 
 void CEnemyObject::Animate(float fElapsedTime)
@@ -51,4 +52,42 @@ XMFLOAT3 CEnemyObject::GetMuzzleWorldPosition() const
 	pos.z += look.z * 2.5f;
 
 	return pos;
+}
+
+void CEnemyObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
+{
+	// ∫ª√º ∑ª¥ı
+	CGameObject::Render(hDCFrameBuffer, pCamera);
+
+	// √—±∏ ∑ª¥ı
+	XMFLOAT3 muzzlePos = GetMuzzleWorldPosition();
+
+	XMFLOAT4X4 xmf4x4Muzzle = m_xmf4x4World;
+	xmf4x4Muzzle._41 = muzzlePos.x;
+	xmf4x4Muzzle._42 = muzzlePos.y;
+	xmf4x4Muzzle._43 = muzzlePos.z;
+
+	// Ω∫ƒ…¿œ √‡º“
+	XMMATRIX xmScale = XMMatrixScaling(0.25f, 0.25f, 0.25f);
+	XMMATRIX xmWorld = XMLoadFloat4x4(&xmf4x4Muzzle);
+	XMMATRIX xmFinal = XMMatrixMultiply(xmScale, xmWorld);
+
+	XMFLOAT4X4 xmf4x4Final;
+	XMStoreFloat4x4(&xmf4x4Final, xmFinal);
+
+	CGraphicsPipeline::SetWorldTransform(&xmf4x4Final);
+
+	HPEN hPen = ::CreatePen(PS_SOLID, 0, RGB(255, 0, 0));
+	HBRUSH hBrush = ::CreateSolidBrush(RGB(255, 0, 0));
+
+	HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+	HBRUSH hOldBrush = (HBRUSH)::SelectObject(hDCFrameBuffer, hBrush);
+
+	static CCubeMesh s_MuzzleMesh(4.0f, 4.0f, 4.0f);
+	s_MuzzleMesh.Render(hDCFrameBuffer);
+
+	::SelectObject(hDCFrameBuffer, hOldBrush);
+	::SelectObject(hDCFrameBuffer, hOldPen);
+	::DeleteObject(hBrush);
+	::DeleteObject(hPen);
 }
