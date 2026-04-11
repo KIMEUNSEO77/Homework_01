@@ -15,20 +15,40 @@ void CEnemyObject::Animate(float fElapsedTime)
 		XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 		XMFLOAT3 myPos = GetPosition();
 
-		XMFLOAT3 dir;
-		dir.x = playerPos.x - myPos.x;
-		dir.y = playerPos.y - myPos.y;
-		dir.z = playerPos.z - myPos.z;
+		XMFLOAT3 dir = XMFLOAT3(
+			playerPos.x - myPos.x,
+			playerPos.y - myPos.y,
+			playerPos.z - myPos.z
+		);
 
 		SetMovingDirection(dir);
 		SetMovingSpeed(2.0f);
 	}
 
-	// 공격 타이머 (나중에 사용)
+	// 공격 타이머 
 	m_fAttackElapsed += fElapsedTime;
 	if (m_fAttackElapsed >= m_fAttackInterval)
 	{
 		// Attack(); 나중에 구현
 		m_fAttackElapsed = 0.0f;
 	}
+}
+
+// 공격 위치 구하는 함수
+XMFLOAT3 CEnemyObject::GetMuzzleWorldPosition() const
+{
+	XMFLOAT3 pos = GetPosition();
+
+	// Look 벡터 이용
+	XMFLOAT3 look = XMFLOAT3(
+		m_xmf4x4World._31,
+		m_xmf4x4World._32,
+		m_xmf4x4World._33
+	);
+
+	pos.x += look.x * 2.5f;
+	pos.y += look.y * 2.5f;
+	pos.z += look.z * 2.5f;
+
+	return pos;
 }

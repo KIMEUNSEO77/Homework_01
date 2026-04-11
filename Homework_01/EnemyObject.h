@@ -18,5 +18,8 @@ public:
 
 	virtual void Animate(float fElapsedTime) override;
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera) override;
+
+	// 공격 위치 구하는 함수
+	XMFLOAT3 GetMuzzleWorldPosition() const;
 };
 
