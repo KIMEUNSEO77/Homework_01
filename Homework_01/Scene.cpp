@@ -182,31 +182,21 @@ void CScene::CheckBulletCollisions()
 {
 	for (CBullet* pBullet : m_Bullets)
 	{
-		if (!pBullet) continue;
-		if (!pBullet->IsActive()) continue;
+		if (!pBullet || !pBullet->IsActive()) continue;
+
+		BoundingSphere bulletSphere = pBullet->GetBoundingSphere();
 
 		for (int i = 0; i < m_nObjects; i++)
 		{
 			CGameObject* pTarget = m_ppObjects[i];
+			if (!pTarget || !pTarget->IsActive()) continue;
 
-			if (!pTarget) continue;
-			if (!pTarget->IsActive()) continue;
+			BoundingSphere targetSphere = pTarget->GetBoundingSphere();
 
-			XMFLOAT3 a = pBullet->GetPosition();
-			XMFLOAT3 b = pTarget->GetPosition();
-
-			float dx = a.x - b.x;
-			float dy = a.y - b.y;
-			float dz = a.z - b.z;
-
-			float distSq = dx * dx + dy * dy + dz * dz;
-			float r = pBullet->GetCollisionRadius() + pTarget->GetCollisionRadius();
-
-			if (distSq <= r * r)
+			if (bulletSphere.Intersects(targetSphere))
 			{
-				CreateFragments(pTarget->GetPosition(), pBullet->m_dwColor);
+				CreateFragments(pTarget->GetPosition(), pTarget->m_dwColor);
 
-				// 충돌
 				pBullet->SetActive(false);
 				pTarget->SetActive(false);
 				break;
