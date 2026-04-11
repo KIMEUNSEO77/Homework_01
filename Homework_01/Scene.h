@@ -15,8 +15,7 @@ public:
 
 private:
 	// 게임 객체들의 개수와 개임 객체들의 리스트
-	int m_nObjects = 0;
-	CGameObject** m_ppObjects = nullptr;
+	std::vector<CGameObject*> m_Objects;
 
 	CPlayer* m_pPlayer = nullptr;
 
