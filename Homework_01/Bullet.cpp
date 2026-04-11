@@ -26,16 +26,43 @@ void CBullet::SetRange(float fRange)
     m_fRange = fRange;
 }
 
+// 포물선용
+void CBullet::SetVerticalVelocity(float fVelocity)
+{
+    m_fVerticalVelocity = fVelocity;
+}
+
+void CBullet::SetGravity(float fGravity)
+{
+    m_fGravity = fGravity;
+}
+
 void CBullet::Animate(float fElapsedTime)
 {
-    XMFLOAT3 xmf3Shift;
-    XMStoreFloat3(&xmf3Shift,
-        XMVectorScale(XMLoadFloat3(&m_xmf3Direction), m_fSpeed * fElapsedTime));
+    if (!IsActive()) return;
 
-    Move(xmf3Shift, 1.0f);
+    XMFLOAT3 xmf3OldPosition = GetPosition();
 
-    m_fTraveledDistance += m_fSpeed * fElapsedTime;
+    XMFLOAT3 xmf3MoveDirection = m_xmf3Direction;
+
+    XMFLOAT3 xmf3NewPosition;
+    xmf3NewPosition.x = xmf3OldPosition.x + xmf3MoveDirection.x * m_fSpeed * fElapsedTime;
+    xmf3NewPosition.y = xmf3OldPosition.y + xmf3MoveDirection.y * m_fSpeed * fElapsedTime + m_fVerticalVelocity * fElapsedTime;
+    xmf3NewPosition.z = xmf3OldPosition.z + xmf3MoveDirection.z * m_fSpeed * fElapsedTime;
+
+    SetPosition(xmf3NewPosition);
+
+    // 중력 적용
+    m_fVerticalVelocity += m_fGravity * fElapsedTime;
+
+    float dx = xmf3NewPosition.x - xmf3OldPosition.x;
+    float dy = xmf3NewPosition.y - xmf3OldPosition.y;
+    float dz = xmf3NewPosition.z - xmf3OldPosition.z;
+
+    m_fTraveledDistance += sqrtf(dx * dx + dy * dy + dz * dz);
 
     if (m_fTraveledDistance >= m_fRange)
-        m_bActive = false;
+    {
+        SetActive(false);
+    }
 }
