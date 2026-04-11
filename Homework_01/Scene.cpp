@@ -6,6 +6,8 @@
 #include "Scene.h"
 #include "GraphicsPipeline.h"
 
+#include <print>
+
 // 축 그리는 함수 (2D)
 void DrawLine2D(HDC hDCFrameBuffer, int x0, int y0, int x1, int y1, COLORREF color)
 {
@@ -22,13 +24,13 @@ void DrawLine2D(HDC hDCFrameBuffer, int x0, int y0, int x1, int y1, COLORREF col
 void DrawScreenAxis(HDC hDCFrameBuffer, const XMFLOAT4X4& world, int centerX, int centerY, float length)
 {
 	XMFLOAT3 right(world._11, world._12, world._13);
-	XMFLOAT3 up(world._21, world._22, world._23);
-	XMFLOAT3 look(world._31, world._32, world._33);
+	XMFLOAT3 up(-world._31, -world._32, -world._33);    // look를 up처럼 사용
+	XMFLOAT3 look(world._21, world._22, world._23);  // up을 look처럼 사용
 
 	auto DrawAxis = [&](const XMFLOAT3& axis, COLORREF color)
 		{
 			int x = (int)(centerX + axis.x * length);
-			int y = (int)(centerY - axis.y * length - axis.z * length * 0.5f);
+			int y = (int)(centerY - axis.y * length);
 
 			DrawLine2D(hDCFrameBuffer, centerX, centerY, x, y, color);
 		};
