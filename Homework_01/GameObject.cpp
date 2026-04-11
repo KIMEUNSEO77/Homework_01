@@ -20,7 +20,7 @@ void CGameObject::SetPosition(float x, float y, float z)
 	UpdateBoundingSphere();
 }
 
-void CGameObject::SetPosition(XMFLOAT3& xmf3Position)
+void CGameObject::SetPosition(const XMFLOAT3& xmf3Position)
 {
 	m_xmf4x4World._41 = xmf3Position.x;
 	m_xmf4x4World._42 = xmf3Position.y;

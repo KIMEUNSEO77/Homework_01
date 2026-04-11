@@ -167,7 +167,7 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position, const XMFLOAT3& xmf3Dire
 	CBullet* pBullet = new CBullet();
 	pBullet->SetMesh(pBulletMesh);
 	pBullet->SetColor(RGB(255, 0, 0));
-	pBullet->SetPosition(const_cast<XMFLOAT3&>(xmf3Position));
+	pBullet->SetPosition(xmf3Position);
 	pBullet->SetDirection(xmf3Direction);
 	pBullet->SetSpeed(50.0f);
 	pBullet->SetRange(200.0f);
@@ -243,7 +243,7 @@ void CScene::CreateFragments(const XMFLOAT3& xmf3Position, DWORD dwColor)
 
 		pFragment->SetMesh(m_pFragmentMesh);
 		pFragment->SetColor(dwColor);
-		pFragment->SetPosition(const_cast<XMFLOAT3&>(xmf3Position));
+		pFragment->SetPosition(xmf3Position);
 
 		XMFLOAT3 xmf3Direction = GetRandomDirection();
 		pFragment->SetMovingDirection(xmf3Direction);
