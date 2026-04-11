@@ -49,7 +49,7 @@ void CScene::BuildObjects()
 		pObject->SetMesh(pCubeMesh);
 		pObject->SetColor(ColorUtils::GetRandomColor());
 
-		XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -5.0f, 10.0f, 10.0f, 60.0f);
+		XMFLOAT3 pos = GetRandomPosition(-20.0f, 20.0f, -10.0f, 10.0f, 10.0f, 60.0f);
 		pObject->SetPosition(pos);
 
 		XMFLOAT3 rotAxis = GetRandomDirection();
