@@ -14,7 +14,7 @@ public:
 	virtual ~CScene() {}
 
 private:
-	// 게임 객체들의 개수와 개임 객체들의 리스트
+	// 게임 객체들의 리스트
 	std::vector<CGameObject*> m_Objects;
 
 	CPlayer* m_pPlayer = nullptr;
@@ -45,6 +45,8 @@ public:
 
 	// 랜덤한 방향 벡터 생성
 	XMFLOAT3 GetRandomDirection();
+	// 랜덤한 위치 생성
+	XMFLOAT3 GetRandomPosition(float minX, float maxX, float minY, float maxY, float minZ, float maxZ);
 	// 파편 생성
 	void CreateFragments(const XMFLOAT3& xmf3Position, DWORD dwColor);
 	// 죽은 파편 처리
