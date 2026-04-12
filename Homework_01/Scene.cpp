@@ -40,6 +40,22 @@ void DrawScreenAxis(HDC hDCFrameBuffer, const XMFLOAT4X4& world, int centerX, in
 	DrawAxis(look, RGB(0, 0, 255));   // Z
 }
 
+// 원 그리는 함수 (2D)
+void DrawCircle2D(HDC hDCFrameBuffer, int cx, int cy, int radius, COLORREF color)
+{
+	HPEN hPen = ::CreatePen(PS_SOLID, 1, color);
+	HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
+
+	HBRUSH hBrush = (HBRUSH)::GetStockObject(NULL_BRUSH);
+	HBRUSH hOldBrush = (HBRUSH)::SelectObject(hDCFrameBuffer, hBrush);
+
+	::Ellipse(hDCFrameBuffer, cx - radius, cy - radius, cx + radius, cy + radius);
+
+	::SelectObject(hDCFrameBuffer, hOldBrush);
+	::SelectObject(hDCFrameBuffer, hOldPen);
+	::DeleteObject(hPen);
+}
+
 // 랜덤 색상 생성하는 유틸리티 네임스페이스
 namespace ColorUtils
 {

@@ -3,6 +3,22 @@
 #include "stdafx.h"
 #include "Player.h"
 
+// 모드 전환
+void CPlayer::SetCameraMode(CameraMode eMode)
+{
+	m_eCameraMode = eMode;
+
+	switch (m_eCameraMode)
+	{
+	case CameraMode::FirstPerson:
+		SetCameraOffset(m_xmf3FirstPersonOffset);
+		break;
+
+	case CameraMode::ThirdPerson:
+		SetCameraOffset(m_xmf3ThirdPersonOffset);
+		break;
+	}
+}
 
 void CPlayer::SetPosition(float x, float y, float z)
 {

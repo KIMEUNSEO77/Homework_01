@@ -6,6 +6,13 @@
 #include "GameObject.h"
 #include "Camera.h"
 
+// 카메라 모드: 1인칭 시점(First Person)과 3인칭 시점(Third Person)
+enum class CameraMode
+{
+	FirstPerson,
+	ThirdPerson
+};
+
 // 플레이어 객체도 게임 객체이기 때문에 CGameObject 클래스를 상속받음
 class CPlayer : public CGameObject
 {
@@ -37,6 +44,13 @@ public:
 	// 플레이어 객체에 포함된 카메라
 	CCamera* m_pCamera = nullptr;
 
+private:
+	// 카메라 모드 전환을 위한 변수
+	CameraMode m_eCameraMode = CameraMode::ThirdPerson;
+
+	XMFLOAT3 m_xmf3FirstPersonOffset = XMFLOAT3(0.0f, 2.0f, -1.0f);
+	XMFLOAT3 m_xmf3ThirdPersonOffset = XMFLOAT3(0.0f, 5.0f, -15.0f);
+
 public:
 	XMFLOAT3 GetPosition() { return m_xmf3Position; }
 	XMFLOAT3 GetLookVector() { return m_xmf3Look; }
@@ -64,6 +78,9 @@ public:
 
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 	CCamera* GetCamera() { return(m_pCamera); }
+
+	void SetCameraMode(CameraMode eMode);
+	CameraMode GetCameraMode() const { return m_eCameraMode; }
 };
 
 class CAirplanePlayer : public CPlayer

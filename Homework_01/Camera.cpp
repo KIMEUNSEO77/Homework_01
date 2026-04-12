@@ -169,14 +169,30 @@ void CCamera::Update(CPlayer* pPlayer, XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 	float fTimeLagScale = fTimeElapsed * 4.0f;
 	float fDistance = fLength * fTimeLagScale;
 
-	if (fDistance > fLength) fDistance = fLength;
-	if (fLength < 0.01f) fDistance = fLength;
-	if (fDistance > 0)
+	if (pPlayer->GetCameraMode() == CameraMode::FirstPerson)
 	{
-		// 카메라를 공전하지 않고 이동 (회전의 각도가 작은 경우 회전 이동은 선형 이동과 거의 같음)
-		XMStoreFloat3(&m_xmf3Position, XMVectorAdd(xmvPosition,
-			XMVectorScale(xmvDirection, fDistance)));
-		// 카메라가 플레이어를 바라보도록 함
+		// 1인칭은 랙 없이 바로 붙이는 걸 추천
+		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
+
+		XMFLOAT3 xmf3CameraLookAt(
+			m_xmf3Position.x + pPlayer->m_xmf3Look.x,
+			m_xmf3Position.y + pPlayer->m_xmf3Look.y,
+			m_xmf3Position.z + pPlayer->m_xmf3Look.z
+		);
+
+		SetLookAt(xmf3CameraLookAt, pPlayer->m_xmf3Up);
+	}
+	else
+	{
+		if (fDistance > fLength) fDistance = fLength;
+		if (fLength < 0.01f) fDistance = fLength;
+
+		if (fDistance > 0)
+		{
+			XMStoreFloat3(&m_xmf3Position,
+				XMVectorAdd(xmvPosition, XMVectorScale(xmvDirection, fDistance)));
+		}
+
 		SetLookAt(pPlayer->m_xmf3Position, pPlayer->m_xmf3Up);
 	}
 }

@@ -3,6 +3,8 @@
 #include "GameFramework.h"
 
 static bool bSpacePressed = false;
+static bool bKey1Pressed = false;
+static bool bKey3Pressed = false;
 
 // 주 윈도우가 생성되면 호출됨
 void CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
@@ -176,6 +178,35 @@ void CGameFramework::ProcessInput()
 	else
 	{
 		bSpacePressed = false;
+	}
+
+	// 카메라 모드 전환
+	if (pKeyBuffer['1'] & 0xF0)
+	{
+		if (!bKey1Pressed)
+		{
+			m_pPlayer->SetCameraMode(CameraMode::FirstPerson);
+			//m_pPlayer->SetCameraOffset(XMFLOAT3(0.0f, 1.5f, 2.0f));
+			bKey1Pressed = true;
+		}
+	}
+	else
+	{
+		bKey1Pressed = false;
+	}
+
+	if (pKeyBuffer['3'] & 0xF0)
+	{
+		if (!bKey3Pressed)
+		{
+			m_pPlayer->SetCameraMode(CameraMode::ThirdPerson);
+			//m_pPlayer->SetCameraOffset(XMFLOAT3(0.0f, 5.0f, -15.0f));
+			bKey3Pressed = true;
+		}
+	}
+	else
+	{
+		bKey3Pressed = false;
 	}
 
 	// 플레이어를 실제로 이동하고 카메라를 갱신. 마찰력의 영향을 속도 벡터에 적용
