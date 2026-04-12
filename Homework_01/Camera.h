@@ -57,6 +57,11 @@ public:
 	CViewport m_Viewport;
 
 public:
+	XMFLOAT3 GetPosition() const { return m_xmf3Position; }
+	XMFLOAT3 GetRight() const { return m_xmf3Right; }
+	XMFLOAT3 GetUp() const { return m_xmf3Up; }
+	XMFLOAT3 GetLook() const { return m_xmf3Look; }
+
 	void SetFOVAngle(float fFOVAngle);
 
 	// 카메라 변환 행렬을 생성
