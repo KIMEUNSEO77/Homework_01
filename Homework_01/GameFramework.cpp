@@ -230,14 +230,19 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT
 	case WM_LBUTTONDOWN:
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
+
+		if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 
 		// 마우스 캡쳐를 해제
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 		::ReleaseCapture();
+
+		if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_MOUSEMOVE:
+		if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	default:
 		if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd,

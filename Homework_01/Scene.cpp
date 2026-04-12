@@ -357,3 +357,135 @@ void CScene::CreateEnemy()
 
 	m_Objects.push_back(pEnemy);
 }
+
+void CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	switch (nMessageID)
+	{
+	case WM_RBUTTONDOWN:
+	{
+		if (!m_pPlayer) return;
+
+		CCamera* pCamera = m_pPlayer->GetCamera();
+		if (!pCamera) return;
+
+		int x = LOWORD(lParam);
+		int y = HIWORD(lParam);
+
+		Ray ray = GeneratePickingRay(x, y, pCamera);
+
+		float fHitDistance = 0.0f;
+		CGameObject* pTarget = PickObjectByRay(ray, &fHitDistance);
+
+		if (pTarget)
+		{
+			FireBulletToTarget(pTarget);
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+Ray CScene::GeneratePickingRay(int x, int y, CCamera* pCamera)
+{
+	Ray ray{};
+
+	if (!pCamera) return ray;
+
+	float viewportWidth = static_cast<float>(pCamera->m_Viewport.m_nWidth);
+	float viewportHeight = static_cast<float>(pCamera->m_Viewport.m_nHeight);
+
+	// 화면 좌표 -> NDC
+	float ndcX = (2.0f * x / viewportWidth) - 1.0f;
+	float ndcY = 1.0f - (2.0f * y / viewportHeight);
+
+	// 투영행렬 역적용
+	XMFLOAT3 rayDirView;
+	rayDirView.x = ndcX / pCamera->m_xmf4x4Project._11;
+	rayDirView.y = ndcY / pCamera->m_xmf4x4Project._22;
+	rayDirView.z = 1.0f;
+	rayDirView = Vector3Normalize(rayDirView);
+
+	XMFLOAT3 right = pCamera->GetRight();
+	XMFLOAT3 up = pCamera->GetUp();
+	XMFLOAT3 look = pCamera->GetLook();
+
+	XMFLOAT3 rayDirWorld = Vector3Add(
+		Vector3Add(
+			Vector3Scale(right, rayDirView.x),
+			Vector3Scale(up, rayDirView.y)
+		),
+		Vector3Scale(look, rayDirView.z)
+	);
+	rayDirWorld = Vector3Normalize(rayDirWorld);
+
+	ray.origin = pCamera->GetPosition();
+	ray.direction = rayDirWorld;
+
+	return ray;
+}
+
+bool CScene::IntersectRaySphere(const Ray& ray, const BoundingSphere& sphere, float& fHitDistance)
+{
+	XMFLOAT3 toCenter = Vector3Subtract(ray.origin, sphere.Center);
+
+	float a = Vector3Dot(ray.direction, ray.direction);
+	float b = 2.0f * Vector3Dot(toCenter, ray.direction);
+	float c = Vector3Dot(toCenter, toCenter) - (sphere.Radius * sphere.Radius);
+
+	float discriminant = b * b - 4.0f * a * c;
+	if (discriminant < 0.0f) return false;
+
+	float sqrtDiscriminant = sqrtf(discriminant);
+
+	float t1 = (-b - sqrtDiscriminant) / (2.0f * a);
+	float t2 = (-b + sqrtDiscriminant) / (2.0f * a);
+
+	if (t1 >= 0.0f)
+		fHitDistance = t1;
+	else if (t2 >= 0.0f)
+		fHitDistance = t2;
+	else
+		return false;
+
+	return true;
+}
+
+CGameObject* CScene::PickObjectByRay(const Ray& ray, float* pfHitDistance)
+{
+	CGameObject* pPickedObject = nullptr;
+	float fNearestDistance = FLT_MAX;
+
+	for (CGameObject* pObject : m_Objects)
+	{
+		if (!pObject || !pObject->IsActive()) continue;
+
+		float fDistance = 0.0f;
+		if (IntersectRaySphere(ray, pObject->GetBoundingSphere(), fDistance))
+		{
+			if (fDistance < fNearestDistance)
+			{
+				fNearestDistance = fDistance;
+				pPickedObject = pObject;
+			}
+		}
+	}
+
+	if (pfHitDistance) *pfHitDistance = fNearestDistance;
+	return pPickedObject;
+}
+
+void CScene::FireBulletToTarget(CGameObject* pTarget)
+{
+	if (!m_pPlayer || !pTarget) return;
+
+	XMFLOAT3 firePosition = m_pPlayer->GetPosition();
+	XMFLOAT3 targetPosition = pTarget->GetPosition();
+
+	XMFLOAT3 fireDirection = Vector3Subtract(targetPosition, firePosition);
+	fireDirection = Vector3Normalize(fireDirection);
+
+	CreateBullet(firePosition, fireDirection, RGB(100, 100, 255));
+}
