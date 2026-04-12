@@ -38,6 +38,8 @@ private:
 	float m_fEnemySpawnElapsed = 0.0f;
 	float m_fEnemySpawnInterval = 5.0f;
 
+	CGameObject* m_pFocusedTarget = nullptr;  // 현재 조준된 타겟
+
 public:
 	// 게임 객체들을 생성하고 소멸
 	virtual void BuildObjects();
@@ -70,6 +72,8 @@ public:
 
 	// 적 생성
 	void CreateEnemy();
+
+	CGameObject* GetLockedTarget() const { return m_pFocusedTarget; }
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,
