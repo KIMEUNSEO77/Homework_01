@@ -8,6 +8,13 @@
 #include "Fragment.h"
 #include "EnemyObject.h"
 
+// 마우스 피킹을 위한 Ray 구조체
+struct Ray
+{
+	XMFLOAT3 origin;
+	XMFLOAT3 direction;
+};
+
 class CScene
 {
 public:
@@ -64,11 +71,17 @@ public:
 	// 적 생성
 	void CreateEnemy();
 
-
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,
 		WPARAM wParam, LPARAM lParam) { }
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID,
 		WPARAM wParam, LPARAM lParam) { }
+
+private:
+	// 피킹 관련
+	Ray GeneratePickingRay(int x, int y, CCamera* pCamera);
+	bool IntersectRaySphere(const Ray& ray, const BoundingSphere& sphere, float& fHitDistance);
+	CGameObject* PickObjectByRay(const Ray& ray, float* pfHitDistance = nullptr);
+	void FireBulletToTarget(CGameObject* pTarget);
 };
 

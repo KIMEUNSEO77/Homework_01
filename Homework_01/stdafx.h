@@ -17,6 +17,7 @@
 #include <math.h>
 
 #include <cmath>
+#include <cfloat>
 
 // 윈도우 클라이언트 영역 크기
 #define FRAME_BUFFER_WIDTH 1280
@@ -58,3 +59,34 @@ namespace Matrix4x4
 	}
 }
 
+static XMFLOAT3 Vector3Add(const XMFLOAT3& a, const XMFLOAT3& b)
+{
+	return XMFLOAT3(a.x + b.x, a.y + b.y, a.z + b.z);
+}
+
+static XMFLOAT3 Vector3Subtract(const XMFLOAT3& a, const XMFLOAT3& b)
+{
+	return XMFLOAT3(a.x - b.x, a.y - b.y, a.z - b.z);
+}
+
+static XMFLOAT3 Vector3Scale(const XMFLOAT3& v, float s)
+{
+	return XMFLOAT3(v.x * s, v.y * s, v.z * s);
+}
+
+static float Vector3Dot(const XMFLOAT3& a, const XMFLOAT3& b)
+{
+	return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+static float Vector3Length(const XMFLOAT3& v)
+{
+	return sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
+}
+
+static XMFLOAT3 Vector3Normalize(const XMFLOAT3& v)
+{
+	float len = Vector3Length(v);
+	if (len <= 0.00001f) return XMFLOAT3(0.0f, 0.0f, 0.0f);
+	return XMFLOAT3(v.x / len, v.y / len, v.z / len);
+}
