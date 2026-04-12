@@ -73,7 +73,12 @@ public:
 	// 적 생성
 	void CreateEnemy();
 
-	CGameObject* GetLockedTarget() const { return m_pFocusedTarget; }
+	// 현재 조준된 타겟 반환
+	CGameObject* GetFocusedTarget() const { return m_pFocusedTarget; }
+	void FocusTargetByMouse(int x, int y);
+	void ClearFocusedTarget();
+	XMFLOAT3 GetFireDirection() const;
+	bool HasFocusedTarget() const { return (m_pFocusedTarget != nullptr); }
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,

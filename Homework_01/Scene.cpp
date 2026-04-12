@@ -180,6 +180,12 @@ void CScene::Animate(float fElapsedTime)
 		CreateEnemy();
 		m_fEnemySpawnElapsed -= m_fEnemySpawnInterval;
 	}
+
+	// 현재 조준된 타겟이 비활성화되었는지 체크
+	if (m_pFocusedTarget && !m_pFocusedTarget->IsActive())
+	{
+		m_pFocusedTarget = nullptr;
+	}
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -364,23 +370,12 @@ void CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 	{
 	case WM_RBUTTONDOWN:
 	{
-		if (!m_pPlayer) return;
-
-		CCamera* pCamera = m_pPlayer->GetCamera();
-		if (!pCamera) return;
-
-		int x = LOWORD(lParam);
-		int y = HIWORD(lParam);
-
-		Ray ray = GeneratePickingRay(x, y, pCamera);
-
-		float fHitDistance = 0.0f;
-		CGameObject* pTarget = PickObjectByRay(ray, &fHitDistance);
-
-		if (pTarget)
-		{
-			FireBulletToTarget(pTarget);
-		}
+		FocusTargetByMouse(LOWORD(lParam), HIWORD(lParam));
+		break;
+	}
+	case WM_RBUTTONUP:
+	{
+		ClearFocusedTarget();
 		break;
 	}
 	default:
@@ -488,4 +483,40 @@ void CScene::FireBulletToTarget(CGameObject* pTarget)
 	fireDirection = Vector3Normalize(fireDirection);
 
 	CreateBullet(firePosition, fireDirection, RGB(100, 100, 255));
+}
+
+void CScene::FocusTargetByMouse(int x, int y)
+{
+	if (!m_pPlayer) return;
+
+	CCamera* pCamera = m_pPlayer->GetCamera();
+	if (!pCamera) return;
+
+	Ray ray = GeneratePickingRay(x, y, pCamera);
+
+	float fHitDistance = 0.0f;
+	m_pFocusedTarget = PickObjectByRay(ray, &fHitDistance);
+}
+
+void CScene::ClearFocusedTarget()
+{
+	m_pFocusedTarget = nullptr;
+}
+
+XMFLOAT3 CScene::GetFireDirection() const
+{
+	if (m_pFocusedTarget && m_pFocusedTarget->IsActive() && m_pPlayer)
+	{
+		XMFLOAT3 firePosition = m_pPlayer->GetPosition();
+		XMFLOAT3 targetPosition = m_pFocusedTarget->GetPosition();
+
+		XMFLOAT3 fireDirection = Vector3Subtract(targetPosition, firePosition);
+		return Vector3Normalize(fireDirection);
+	}
+
+	// 락온 대상이 없으면 기존처럼 전방 발사
+	if (m_pPlayer)
+		return m_pPlayer->GetLookVector();
+
+	return XMFLOAT3(0.0f, 0.0f, 1.0f);
 }
