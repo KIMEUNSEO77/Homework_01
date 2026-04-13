@@ -29,6 +29,9 @@ private:
 	CPlayer* m_pPlayer = nullptr;
 	// 게임 객체들을 포함하는 씬(게임 세계) 클래스
 	CScene* m_pScene = nullptr;
+	// 미니 카메라 객체 (플레이어의 후면을 보여주는 카메라)
+	CCamera* m_pBackViewCamera = nullptr;
+
 
 	// 프레임 레이트를 관리하기 위한 타이머 클래스 객체
 	CGameTimer m_GameTimer;
