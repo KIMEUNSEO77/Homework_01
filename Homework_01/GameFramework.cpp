@@ -109,6 +109,7 @@ void CGameFramework::ReleaseObjects()
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
 	if (m_pPlayer) delete m_pPlayer;
+	if (m_pBackViewCamera) delete m_pBackViewCamera;
 }
 
 // 키보드 입력을 처리해 플레이어 객체를 이동
@@ -251,6 +252,9 @@ void CGameFramework::FrameAdvance()
 	// 플레이어(비행기)를 렌더링
 	if (m_pPlayer) m_pPlayer->Render(m_hDCFrameBuffer, pCamera);
 
+	// 미니 카메라 (플레이어 뒤를 보는 카메라)로 씬과 플레이어를 렌더링
+	RenderBackViewCamera();
+
 	// 렌더링을 한 화면(비트맵)을 클라이언트 영역으로 복사
 	PresentFrameBuffer();
 
@@ -334,4 +338,72 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd,
 		break;
 	}
 	return(0);
+}
+
+// 미니 카메라 업데이트
+void CGameFramework::UpdateBackViewCamera()
+{
+	if (!m_pBackViewCamera || !m_pPlayer) return;
+
+	// 플레이어 뒤쪽 + 약간 위
+	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
+	XMFLOAT3 look = m_pPlayer->GetLookVector();
+	XMFLOAT3 up = m_pPlayer->m_xmf3Up;   // 접근 가능하면 그대로, 아니면 getter 사용
+	XMFLOAT3 right = m_pPlayer->m_xmf3Right;
+
+	// 뒤쪽 오프셋 (플레이어 로컬 기준)
+	XMFLOAT3 offset(0.0f, 6.0f, -18.0f);
+
+	XMMATRIX rotate;
+	rotate.r[0] = XMVectorSet(right.x, right.y, right.z, 0.0f);
+	rotate.r[1] = XMVectorSet(up.x, up.y, up.z, 0.0f);
+	rotate.r[2] = XMVectorSet(look.x, look.y, look.z, 0.0f);
+	rotate.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+	XMVECTOR xmvOffset = XMVector3TransformCoord(XMLoadFloat3(&offset), rotate);
+	XMVECTOR xmvCameraPos = XMVectorAdd(XMLoadFloat3(&playerPos), xmvOffset);
+
+	XMFLOAT3 rearCameraPos;
+	XMStoreFloat3(&rearCameraPos, xmvCameraPos);
+
+	// 플레이어를 바라보게
+	XMFLOAT3 lookAt = playerPos;
+
+	m_pBackViewCamera->SetLookAt(rearCameraPos, lookAt, up);
+	m_pBackViewCamera->GenerateViewMatrix(); // 중요
+}
+
+void CGameFramework::RenderBackViewCamera()
+{
+	if (!m_pBackViewCamera || !m_pScene || !m_pPlayer) return;
+
+	const int miniWidth = 320;
+	const int miniHeight = 180;
+	const int margin = 20;
+
+	const int left = m_rcClient.right - miniWidth - margin;
+	const int top = margin;
+
+	// 미니뷰포트 설정
+	m_pBackViewCamera->SetViewport(left, top, miniWidth, miniHeight);
+	m_pBackViewCamera->GeneratePerspectiveProjectionMatrix(1.01f, 500.0f, 60.0f);
+
+	// 플레이어 뒤를 보는 카메라 갱신
+	UpdateBackViewCamera();
+	// 배경 테두리 먼저
+	HPEN hPen = ::CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+	HPEN hOldPen = (HPEN)::SelectObject(m_hDCFrameBuffer, hPen);
+	HBRUSH hBrush = ::CreateSolidBrush(RGB(220, 220, 220));
+	HBRUSH hOldBrush = (HBRUSH)::SelectObject(m_hDCFrameBuffer, hBrush);
+
+	::Rectangle(m_hDCFrameBuffer, left - 2, top - 2, left + miniWidth + 2, top + miniHeight + 2);
+
+	::SelectObject(m_hDCFrameBuffer, hOldBrush);
+	::SelectObject(m_hDCFrameBuffer, hOldPen);
+	::DeleteObject(hPen);
+	::DeleteObject(hBrush);
+
+	// 미니 카메라로 다시 렌더
+	m_pScene->Render(m_hDCFrameBuffer, m_pBackViewCamera);
+	m_pPlayer->Render(m_hDCFrameBuffer, m_pBackViewCamera);
 }

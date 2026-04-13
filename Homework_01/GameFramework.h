@@ -70,5 +70,9 @@ public:
 		wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT
 		nMessageID, WPARAM wParam, LPARAM lParam);
+
+	// 미니 카메라 업데이트
+	void UpdateBackViewCamera();
+	void RenderBackViewCamera();
 };
 
