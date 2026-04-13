@@ -352,7 +352,7 @@ void CGameFramework::UpdateBackViewCamera()
 	XMFLOAT3 right = m_pPlayer->m_xmf3Right;
 
 	// 뒤쪽 오프셋 (플레이어 로컬 기준)
-	XMFLOAT3 offset(0.0f, 6.0f, -18.0f);
+	XMFLOAT3 offset(0.0f, 0.0f, 0.0f);
 
 	XMMATRIX rotate;
 	rotate.r[0] = XMVectorSet(right.x, right.y, right.z, 0.0f);
@@ -363,13 +363,17 @@ void CGameFramework::UpdateBackViewCamera()
 	XMVECTOR xmvOffset = XMVector3TransformCoord(XMLoadFloat3(&offset), rotate);
 	XMVECTOR xmvCameraPos = XMVectorAdd(XMLoadFloat3(&playerPos), xmvOffset);
 
-	XMFLOAT3 rearCameraPos;
-	XMStoreFloat3(&rearCameraPos, xmvCameraPos);
+	XMFLOAT3 backCameraPos;
+	XMStoreFloat3(&backCameraPos, xmvCameraPos);
 
-	// 플레이어를 바라보게
-	XMFLOAT3 lookAt = playerPos;
+	// 플레이어와 반대 방향을 바라보도록
+	XMFLOAT3 lookAt(
+		backCameraPos.x - look.x,
+		backCameraPos.y - look.y,
+		backCameraPos.z - look.z
+	);
 
-	m_pBackViewCamera->SetLookAt(rearCameraPos, lookAt, up);
+	m_pBackViewCamera->SetLookAt(backCameraPos, lookAt, up);
 	m_pBackViewCamera->GenerateViewMatrix(); // 중요
 }
 
