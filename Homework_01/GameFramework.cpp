@@ -82,6 +82,12 @@ void CGameFramework::BuildObjects()
 	pCamera->GeneratePerspectiveProjectionMatrix(1.01f, 500.0f, 60.0f);
 	pCamera->SetFOVAngle(60.0f);
 
+	// 미니뷰 카메라 추가
+	m_pBackViewCamera = new CCamera();
+	m_pBackViewCamera->SetViewport(0, 0, 320, 180); // 일단 임시값
+	m_pBackViewCamera->GeneratePerspectiveProjectionMatrix(1.01f, 500.0f, 60.0f);
+	m_pBackViewCamera->SetFOVAngle(60.0f);
+
 	// 비행기 메쉬를 생성하고 플레이어 객체에 연결
 	CAirplaneMesh* pAirplaneMesh = new CAirplaneMesh(6.0f, 6.0f, 1.0f);
 	m_pPlayer = new CAirplanePlayer();
