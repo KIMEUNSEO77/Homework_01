@@ -55,11 +55,6 @@ public:
 	// 게임 객체들을 렌더링
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera);
 
-	// 총알 생성
-	void CreateBullet(const XMFLOAT3& xmf3Position, 
-		const XMFLOAT3& xmf3Direction,
-		DWORD dwColor);
-
 	// 충돌 체크 함수
 	void CheckBulletCollisions();
 	// 죽은 총알 처리
@@ -76,9 +71,12 @@ public:
 
 	// 적 생성
 	void CreateEnemy();
-
 	// 일반 큐브 생성
 	void CreateObject();
+	// 총알 생성
+	void CreateBullet(const XMFLOAT3& xmf3Position,
+		const XMFLOAT3& xmf3Direction,
+		DWORD dwColor, BulletOwner owner);
 
 	// 현재 조준된 타겟 반환
 	CGameObject* GetFocusedTarget() const { return m_pFocusedTarget; }
