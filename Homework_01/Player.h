@@ -46,7 +46,7 @@ public:
 
 protected:
 	// 플레이어 체력
-	int m_nHP = 100;
+	int m_nHP = 1000;
 	int m_nMaxHP = 1000;
 
 private:

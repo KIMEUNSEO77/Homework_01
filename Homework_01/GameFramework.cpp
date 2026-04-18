@@ -445,16 +445,23 @@ void CGameFramework::DrawHUD()
 {
 	if (!m_pScene) return;
 
+	// 점수
 	TCHAR pstrScore[64];
-	_stprintf_s(pstrScore, 64, TEXT("GameScore : %d"), m_pScene->GetScore());
+	_stprintf_s(pstrScore, 64, TEXT("Game Score : %d"), m_pScene->GetScore());
 
 	DrawText(512, 30, pstrScore, RGB(255, 0, 255), 40);
 
-	// 시간 가져오기
+	// 시간
 	float fTime = m_pScene->m_fPlayTime;
 
 	TCHAR pstrTime[64];
 	_stprintf_s(pstrTime, 64, TEXT("Time : %.1f"), fTime);
 
 	DrawText(30, 150, pstrTime, RGB(200, 255, 200), 32);
+
+	// 체력
+	TCHAR pstrHP[64];
+	_stprintf_s(pstrHP, 64, TEXT("Player HP : %d"), m_pPlayer->GetHP());
+
+	DrawText(512, 80, pstrHP, RGB(200, 200, 100), 32);
 }

@@ -236,3 +236,10 @@ void CAirplanePlayer::OnUpdateTransform()
 	XMStoreFloat4x4(&m_xmf4x4World,
 		XMMatrixMultiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f), XMLoadFloat4x4(&m_xmf4x4World)));
 }
+
+// 플레이어가 nDamage 만큼의 피해를 입음
+void CPlayer::TakeDamage(int nDamage)
+{
+	m_nHP -= nDamage;
+	if (m_nHP < 0) m_nHP = 0;
+}
