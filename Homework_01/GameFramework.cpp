@@ -256,6 +256,9 @@ void CGameFramework::FrameAdvance()
 	// 미니 카메라 (플레이어 뒤를 보는 카메라)로 씬과 플레이어를 렌더링
 	RenderBackViewCamera();
 
+	// 점수 출력
+	DrawHUD();
+
 	// 렌더링을 한 화면(비트맵)을 클라이언트 영역으로 복사
 	PresentFrameBuffer();
 
@@ -411,4 +414,39 @@ void CGameFramework::RenderBackViewCamera()
 	// 미니 카메라로 다시 렌더
 	m_pScene->Render(m_hDCFrameBuffer, m_pBackViewCamera);
 	m_pPlayer->Render(m_hDCFrameBuffer, m_pBackViewCamera);
+}
+
+void CGameFramework::DrawText(int x, int y, LPCTSTR pText, COLORREF color, int nHeight)
+{
+	HFONT hFont = ::CreateFont(
+		nHeight, 0, 0, 0, FW_BOLD, FALSE, FALSE, 0,
+		DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+		TEXT("Arial")
+	);
+
+	HFONT hOldFont = (HFONT)::SelectObject(m_hDCFrameBuffer, hFont);
+
+	::SetBkMode(m_hDCFrameBuffer, TRANSPARENT);
+
+	// 그림자
+	::SetTextColor(m_hDCFrameBuffer, RGB(0, 0, 0));
+	::TextOut(m_hDCFrameBuffer, x + 2, y + 2, pText, lstrlen(pText));
+
+	// 본문
+	::SetTextColor(m_hDCFrameBuffer, color);
+	::TextOut(m_hDCFrameBuffer, x, y, pText, lstrlen(pText));
+
+	::SelectObject(m_hDCFrameBuffer, hOldFont);
+	::DeleteObject(hFont);
+}
+
+void CGameFramework::DrawHUD()
+{
+	if (!m_pScene) return;
+
+	TCHAR pstrScore[64];
+	_stprintf_s(pstrScore, 64, TEXT("GameScore : %d"), m_pScene->GetScore());
+
+	DrawText(512, 30, pstrScore, RGB(255, 0, 255), 40);
 }
