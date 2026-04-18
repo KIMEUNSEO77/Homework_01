@@ -63,6 +63,10 @@ public:
 	void AnimateObjects();
 	void FrameAdvance();
 
+	// UI 출력용 함수
+	void DrawHUD();
+	void DrawText(int x, int y, LPCTSTR pText, COLORREF color, int nHeight);
+
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		wParam, LPARAM lParam);
