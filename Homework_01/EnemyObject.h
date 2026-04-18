@@ -11,12 +11,14 @@ private:
 	CPlayer* m_pPlayer = nullptr;
 
 	float m_fAttackElapsed = 0.0f;
-	float m_fAttackInterval = 3.0f;
+	float m_fAttackInterval = 0.0f;
 
 	bool m_bFireBullet = false;
 
 public:
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
+	void SetAttackInterval(float fInterval) { m_fAttackInterval = fInterval; }  // 공격 시간 설정
+	void SetAttackElapsed(float fElapsed) { m_fAttackElapsed = fElapsed; }  // 공격 타이머 초기화
 
 	virtual void Animate(float fElapsedTime) override;
 	virtual void Render(HDC hDCFrameBuffer, CCamera* pCamera) override;

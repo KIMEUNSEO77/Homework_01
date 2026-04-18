@@ -395,6 +395,14 @@ void CScene::CreateEnemy()
 	// 플레이어 연결 (추적용)
 	pEnemy->SetPlayer(m_pPlayer);
 
+	// 공격 시간 설정 
+	float interval = 2.0f + (rand() % 401) / 100.0f; // 2.0 ~ 6.0
+	pEnemy->SetAttackInterval(interval);
+
+	// 공격 타이머 설정
+	float startOffset = (rand() % 600) / 100.0f; // 0 ~ 6초
+	pEnemy->SetAttackElapsed(startOffset);
+
 	m_Objects.push_back(pEnemy);
 }
 
