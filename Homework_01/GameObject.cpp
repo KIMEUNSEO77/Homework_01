@@ -115,7 +115,7 @@ void CChasingCube::Animate(float fElapsedTime)
 
 		float distance = Vector3Length(toPlayer);
 
-		if (distance > 2.0f) // 너무 가까우면 멈춤
+		if (distance > 3.0f) // 너무 가까우면 멈춤
 		{
 			XMFLOAT3 dir = Vector3Normalize(toPlayer);
 

@@ -95,6 +95,6 @@ public:
 
 private:
 	CPlayer* m_pPlayer = nullptr;
-	float m_fChaseSpeed = 100.0f; // ÃµÃµÈ÷
+	float m_fChaseSpeed = 0.0f; 
 };
 
