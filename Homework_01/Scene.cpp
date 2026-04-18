@@ -84,13 +84,13 @@ XMFLOAT3 CScene::GetRandomPosition(float minX, float maxX, float minY, float max
 void CScene::BuildObjects()
 {
 	// 직육면체 메쉬를 생성
-	CCubeMesh* pCubeMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
+	CCubeMesh* pCubeMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
 
 	// 파편용 작은 큐브 메쉬도 생성
-	m_pFragmentMesh = new CCubeMesh(0.5f, 0.5f, 0.5f);
+	m_pFragmentMesh = new CCubeMesh(0.8f, 0.8f, 0.8f);
 
 	// 적 객체용 큐브 메쉬도 생성
-	m_pEnemyMesh = new CCubeMesh(4.0f, 4.0f, 4.0f);
+	m_pEnemyMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
 
 	const int nObjects = 5;
 
@@ -112,7 +112,7 @@ void CScene::BuildObjects()
 		pObject->SetMovingDirection(moveDir);
 		pObject->SetMovingSpeed(float(rand() % 3));   // 0 ~ 2
 
-		pObject->SetCollisionRadius(2.5f);
+		pObject->SetCollisionRadius(3.5f);
 
 		m_Objects.push_back(pObject);
 	}
@@ -372,7 +372,7 @@ void CScene::CreateEnemy()
 	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -20.0f, 20.0f, 50.0f, 70.0f);
 	pEnemy->SetPosition(pos);
 
-	pEnemy->SetCollisionRadius(2.5f);
+	pEnemy->SetCollisionRadius(3.5f);
 
 	// 플레이어 연결 (추적용)
 	pEnemy->SetPlayer(m_pPlayer);

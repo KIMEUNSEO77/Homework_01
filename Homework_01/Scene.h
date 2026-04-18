@@ -36,7 +36,11 @@ private:
 
 	// 적 객체 스폰 타이머
 	float m_fEnemySpawnElapsed = 0.0f;
-	float m_fEnemySpawnInterval = 5.0f;
+	float m_fEnemySpawnInterval = 3.0f;
+
+	// 일반 큐브 스폰 타이머
+	float m_fObjectSpawnElapsed = 0.0f;
+	float m_fObjectSpawnInterval = 5.0f;
 
 	CGameObject* m_pFocusedTarget = nullptr;  // 현재 조준된 타겟
 
@@ -72,6 +76,9 @@ public:
 
 	// 적 생성
 	void CreateEnemy();
+
+	// 일반 큐브 생성
+	void CreateObject();
 
 	// 현재 조준된 타겟 반환
 	CGameObject* GetFocusedTarget() const { return m_pFocusedTarget; }
