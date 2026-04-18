@@ -44,6 +44,11 @@ public:
 	// 플레이어 객체에 포함된 카메라
 	CCamera* m_pCamera = nullptr;
 
+protected:
+	// 플레이어 체력
+	int m_nHP = 100;
+	int m_nMaxHP = 1000;
+
 private:
 	// 카메라 모드 전환을 위한 변수
 	CameraMode m_eCameraMode = CameraMode::ThirdPerson;
@@ -81,6 +86,16 @@ public:
 
 	void SetCameraMode(CameraMode eMode);
 	CameraMode GetCameraMode() const { return m_eCameraMode; }
+
+	// 플레이어 체력 관련
+	int GetHP() const { return m_nHP; }
+	int GetMaxHP() const { return m_nMaxHP; }
+
+	void SetHP(int nHP) { m_nHP = nHP; }
+	void SetMaxHP(int nMaxHP) { m_nMaxHP = nMaxHP; }
+
+	void TakeDamage(int nDamage);
+	bool IsDead() const { return (m_nHP <= 0); }
 };
 
 class CAirplanePlayer : public CPlayer
