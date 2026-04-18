@@ -381,7 +381,7 @@ void CScene::CreateEnemy()
 	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -20.0f, 20.0f, 50.0f, 70.0f);
 	pEnemy->SetPosition(pos);
 
-	pEnemy->SetCollisionRadius(3.5f);
+	pEnemy->SetCollisionRadius(2.5f);
 
 	// 플레이어 연결 (추적용)
 	pEnemy->SetPlayer(m_pPlayer);
