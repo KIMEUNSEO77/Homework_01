@@ -92,6 +92,8 @@ public:
 	void AddScore(int nScore) { m_nScore += nScore; }
 	void ResetScore() { m_nScore = 0; }
 
+	float m_fPlayTime = 0.0f;  // 게임 플레이 시간
+
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,
 		WPARAM wParam, LPARAM lParam);

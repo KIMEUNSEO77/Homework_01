@@ -211,6 +211,8 @@ void CScene::Animate(float fElapsedTime)
 	{
 		m_pFocusedTarget = nullptr;
 	}
+
+	m_fPlayTime += fElapsedTime;
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -300,6 +302,11 @@ void CScene::CheckBulletCollisions()
 
 				pBullet->SetActive(false);
 				pTarget->SetActive(false);
+
+				CEnemyObject* pEnemy = dynamic_cast<CEnemyObject*>(pTarget);
+				if (pEnemy) AddScore(50);
+				else AddScore(10);
+
 				break;
 			}
 		}
