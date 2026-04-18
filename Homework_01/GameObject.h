@@ -80,3 +80,21 @@ public:
 	bool IsActive() { return m_bActive; }	
 };
 
+
+// 적 추적용 큐브
+class CChasingCube : public CGameObject
+{
+public:
+	CChasingCube() {}
+	virtual ~CChasingCube() {}
+
+	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }
+	void SetChaseSpeed(float fSpeed) { m_fChaseSpeed = fSpeed; }
+
+	virtual void Animate(float fElapsedTime) override;
+
+private:
+	CPlayer* m_pPlayer = nullptr;
+	float m_fChaseSpeed = 100.0f; // 천천히
+};
+

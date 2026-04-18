@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "GameObject.h"
 #include "GraphicsPipeline.h"
+#include "Player.h"
 
 CGameObject::~CGameObject(void)
 {
@@ -100,4 +101,32 @@ void CGameObject::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 		::DeleteObject(hBrush);
 		::DeleteObject(hPen);
 	}
+}
+
+// 적 추적 큐브
+void CChasingCube::Animate(float fElapsedTime)
+{
+	if (m_pPlayer)
+	{
+		XMFLOAT3 myPos = GetPosition();
+		XMFLOAT3 playerPos = m_pPlayer->GetPosition();
+
+		XMFLOAT3 toPlayer = Vector3Subtract(playerPos, myPos);
+
+		float distance = Vector3Length(toPlayer);
+
+		if (distance > 2.0f) // 너무 가까우면 멈춤
+		{
+			XMFLOAT3 dir = Vector3Normalize(toPlayer);
+
+			SetMovingDirection(dir);
+			SetMovingSpeed(m_fChaseSpeed);
+		}
+		else
+		{
+			SetMovingSpeed(0.0f);
+		}
+	}
+
+	CGameObject::Animate(fElapsedTime);
 }
