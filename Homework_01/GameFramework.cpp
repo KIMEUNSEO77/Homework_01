@@ -243,7 +243,7 @@ void CGameFramework::FrameAdvance()
 
 	// 렌더링을 할 대상 화면(비트맵)을 지움
 	// 배경 색상
-	ClearFrameBuffer(RGB(255, 255, 255));
+	ClearFrameBuffer(RGB(10, 10, 10));
 
 	// 씬을 렌더링
 	CCamera* pCamera = m_pPlayer->GetCamera();
@@ -395,9 +395,9 @@ void CGameFramework::RenderBackViewCamera()
 	// 플레이어 뒤를 보는 카메라 갱신
 	UpdateBackViewCamera();
 	// 배경 테두리 먼저
-	HPEN hPen = ::CreatePen(PS_SOLID, 2, RGB(0, 0, 0));
+	HPEN hPen = ::CreatePen(PS_SOLID, 2, RGB(255, 0, 255));
 	HPEN hOldPen = (HPEN)::SelectObject(m_hDCFrameBuffer, hPen);
-	HBRUSH hBrush = ::CreateSolidBrush(RGB(220, 220, 220));
+	HBRUSH hBrush = ::CreateSolidBrush(RGB(150, 150, 150));
 	HBRUSH hOldBrush = (HBRUSH)::SelectObject(m_hDCFrameBuffer, hBrush);
 
 	::Rectangle(m_hDCFrameBuffer, left - 2, top - 2, left + miniWidth + 2, top + miniHeight + 2);
