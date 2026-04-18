@@ -570,14 +570,13 @@ void CScene::CreateObject()
 
 	pObject->SetRotationAxis(GetRandomDirection());
 	pObject->SetRotationSpeed(30.0f + float(rand() % 151));
-	//pObject->SetRotationSpeed(0.0f);
 
 	pObject->SetMovingDirection(GetRandomDirection());
 	pObject->SetMovingSpeed(float(rand() % 3));
 
 	pObject->SetCollisionRadius(3.5f);
 
-	pObject->SetPlayer(m_pPlayer);       // 추가
+	pObject->SetPlayer(m_pPlayer);       
 	pObject->SetChaseSpeed(2.0f);
 
 	m_Objects.push_back(pObject);
