@@ -197,6 +197,15 @@ void CScene::Animate(float fElapsedTime)
 		m_fEnemySpawnElapsed -= m_fEnemySpawnInterval;
 	}
 
+	// 큐브 스폰 타이머
+	m_fObjectSpawnElapsed += fElapsedTime;
+
+	while (m_fObjectSpawnElapsed >= m_fObjectSpawnInterval)
+	{
+		CreateObject();
+		m_fObjectSpawnElapsed -= m_fObjectSpawnInterval;
+	}
+
 	// 현재 조준된 타겟이 비활성화되었는지 체크
 	if (m_pFocusedTarget && !m_pFocusedTarget->IsActive())
 	{
@@ -535,4 +544,30 @@ XMFLOAT3 CScene::GetFireDirection() const
 		return m_pPlayer->GetLookVector();
 
 	return XMFLOAT3(0.0f, 0.0f, 1.0f);
+}
+
+// 일반 큐브 생성
+void CScene::CreateObject()
+{
+	CCubeMesh* pCubeMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
+
+	CGameObject* pObject = new CGameObject();
+
+	pObject->SetMesh(pCubeMesh);
+	pObject->SetColor(ColorUtils::GetRandomColor());
+
+	XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -10.0f, 10.0f, 40.0f, 60.0f);
+	pObject->SetPosition(pos);
+
+	pObject->SetRotationAxis(GetRandomDirection());
+	pObject->SetRotationSpeed(30.0f + float(rand() % 151));
+
+	pObject->SetMovingDirection(GetRandomDirection());
+	pObject->SetMovingSpeed(float(rand() % 3));
+
+	pObject->SetCollisionRadius(3.5f);
+
+	m_Objects.push_back(pObject);
+
+	pCubeMesh->Release();
 }
