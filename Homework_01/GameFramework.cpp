@@ -382,8 +382,8 @@ void CGameFramework::RenderBackViewCamera()
 {
 	if (!m_pBackViewCamera || !m_pScene || !m_pPlayer) return;
 
-	const int miniWidth = 320;
-	const int miniHeight = 180;
+	const int miniWidth = 360;
+	const int miniHeight = 250;
 	const int margin = 20;
 
 	const int left = m_rcClient.right - miniWidth - margin;
