@@ -44,6 +44,8 @@ private:
 
 	CGameObject* m_pFocusedTarget = nullptr;  // 현재 조준된 타겟
 
+	int m_nScore = 0;  // 현재 점수
+
 public:
 	// 게임 객체들을 생성하고 소멸
 	virtual void BuildObjects();
@@ -84,6 +86,11 @@ public:
 	void ClearFocusedTarget();
 	XMFLOAT3 GetFireDirection() const;
 	bool HasFocusedTarget() const { return (m_pFocusedTarget != nullptr); }
+
+	// 점수 관리
+	int GetScore() const { return m_nScore; }
+	void AddScore(int nScore) { m_nScore += nScore; }
+	void ResetScore() { m_nScore = 0; }
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,
