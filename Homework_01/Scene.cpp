@@ -159,7 +159,7 @@ void CScene::Animate(float fElapsedTime)
 			XMFLOAT3 xmf3Position = pEnemy->GetMuzzleWorldPosition();
 			XMFLOAT3 xmf3Direction = pEnemy->GetLookVector();
 
-			CreateBullet(xmf3Position, xmf3Direction, RGB(255, 0, 0));
+			CreateBullet(xmf3Position, xmf3Direction, RGB(255, 0, 0), BulletOwner::Enemy);
 
 			pEnemy->ResetFireBullet();
 		}
@@ -248,7 +248,7 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 // 총알 생성
 void CScene::CreateBullet(const XMFLOAT3& xmf3Position, 
 	const XMFLOAT3& xmf3Direction,
-	DWORD dwColor)
+	DWORD dwColor, BulletOwner owner)
 {
 	CCubeMesh* pBulletMesh = new CCubeMesh(2.0f, 2.0f, 2.0f);
 
@@ -264,6 +264,8 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position,
 	pBullet->SetGravity(-20.0f);         // 중력
 
 	pBullet->SetCollisionRadius(0.5f);  // 총알 반지름 설정
+
+	pBullet->SetBulletOwner(owner);
 
 	m_Bullets.push_back(pBullet);
 
@@ -282,6 +284,13 @@ void CScene::CheckBulletCollisions()
 		for (CGameObject* pTarget : m_Objects)
 		{
 			if (!pTarget || !pTarget->IsActive()) continue;
+
+			// 적 총알이면 적은 무시
+			if (pBullet->GetBulletOwner() == BulletOwner::Enemy)
+			{
+				CEnemyObject* pEnemy = dynamic_cast<CEnemyObject*>(pTarget);
+				if (pEnemy) continue;
+			}
 
 			BoundingSphere targetSphere = pTarget->GetBoundingSphere();
 
@@ -381,7 +390,7 @@ void CScene::CreateEnemy()
 	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -20.0f, 20.0f, 50.0f, 70.0f);
 	pEnemy->SetPosition(pos);
 
-	pEnemy->SetCollisionRadius(2.5f);
+	pEnemy->SetCollisionRadius(3.5f);
 
 	// 플레이어 연결 (추적용)
 	pEnemy->SetPlayer(m_pPlayer);
@@ -507,7 +516,7 @@ void CScene::FireBulletToTarget(CGameObject* pTarget)
 	XMFLOAT3 fireDirection = Vector3Subtract(targetPosition, firePosition);
 	fireDirection = Vector3Normalize(fireDirection);
 
-	CreateBullet(firePosition, fireDirection, RGB(100, 100, 255));
+	CreateBullet(firePosition, fireDirection, RGB(100, 100, 255), BulletOwner::Player);
 }
 
 void CScene::FocusTargetByMouse(int x, int y)

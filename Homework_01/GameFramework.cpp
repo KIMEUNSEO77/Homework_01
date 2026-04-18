@@ -177,7 +177,8 @@ void CGameFramework::ProcessInput()
 			m_pScene->CreateBullet(
 				m_pPlayer->GetPosition(),
 				m_pScene->GetFireDirection(),
-				RGB(100, 100, 255)
+				RGB(100, 100, 255),
+				BulletOwner::Player
 			);
 			bSpacePressed = true;
 		}
