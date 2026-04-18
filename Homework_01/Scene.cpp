@@ -101,7 +101,7 @@ void CScene::BuildObjects()
 		pObject->SetMesh(pCubeMesh);
 		pObject->SetColor(ColorUtils::GetRandomColor());
 
-		XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -10.0f, 10.0f, 40.0f, 60.0f);
+		XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -40.0f, 40.0f, -60.0f, 60.0f);
 		pObject->SetPosition(pos);
 
 		XMFLOAT3 rotAxis = GetRandomDirection();
@@ -257,8 +257,8 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position,
 	pBullet->SetColor(dwColor);
 	pBullet->SetPosition(xmf3Position);
 	pBullet->SetDirection(xmf3Direction);
-	pBullet->SetSpeed(50.0f);
-	pBullet->SetRange(200.0f);
+	pBullet->SetSpeed(80.0f);
+	pBullet->SetRange(250.0f);
 
 	pBullet->SetVerticalVelocity(10.0f); // 처음에 위로 살짝 뜨기
 	pBullet->SetGravity(-20.0f);         // 중력
@@ -387,7 +387,7 @@ void CScene::CreateEnemy()
 	pEnemy->SetColor(ColorUtils::GetRandomColor());
 
 	// 랜덤 위치 생성
-	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -20.0f, 20.0f, 50.0f, 70.0f);
+	XMFLOAT3 pos = GetRandomPosition(-40.0f, 40.0f, -40.0f, 40.0f, -60.0f, 60.0f);
 	pEnemy->SetPosition(pos);
 
 	pEnemy->SetCollisionRadius(3.5f);
@@ -565,7 +565,7 @@ void CScene::CreateObject()
 	pObject->SetMesh(pCubeMesh);
 	pObject->SetColor(ColorUtils::GetRandomColor());
 
-	XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -10.0f, 10.0f, 40.0f, 60.0f);
+	XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -40.0f, 40.0f, -60.0f, 60.0f);
 	pObject->SetPosition(pos);
 
 	pObject->SetRotationAxis(GetRandomDirection());
