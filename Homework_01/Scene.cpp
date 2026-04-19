@@ -140,12 +140,19 @@ void CScene::ReleaseObjects()
 
 void CScene::Animate(float fElapsedTime)
 {
-	if (m_bGameOver) return;
+	if (m_bGameOver || m_bGameClear) return;
 
 	// 플레이어 사망 체크
 	if (m_pPlayer && m_pPlayer->IsDead())
 	{
 		GameOver();
+		return;
+	}
+
+	// 점수 달성 체크
+	if (!m_bGameClear && m_nScore >= 1000)
+	{
+		GameClear();
 		return;
 	}
 
@@ -443,28 +450,36 @@ void CScene::GameOver()
 {
 	m_bGameOver = true;
 
-	// 일반 오브젝트 비활성화
 	for (CGameObject* pObject : m_Objects)
-	{
 		if (pObject) pObject->SetActive(false);
-	}
-
-	// 총알 비활성화
+	
 	for (CBullet* pBullet : m_Bullets)
-	{
 		if (pBullet) pBullet->SetActive(false);
-	}
-
-	// 파편 비활성화
+	
 	for (CFragment* pFragment : m_Fragments)
-	{
 		if (pFragment) pFragment->SetActive(false);
-	}
-
-	// 플레이어도 비활성화
+	
 	if (m_pPlayer) m_pPlayer->SetActive(false);
 
-	// 조준 타겟 해제
+	m_pFocusedTarget = nullptr;
+}
+
+// 게임 클리어 처리
+void CScene::GameClear()
+{
+	m_bGameClear = true;
+
+	for (CGameObject* pObject : m_Objects)
+		if (pObject) pObject->SetActive(false);
+
+	for (CBullet* pBullet : m_Bullets)
+		if (pBullet) pBullet->SetActive(false);
+
+	for (CFragment* pFragment : m_Fragments)
+		if (pFragment) pFragment->SetActive(false);
+
+	if (m_pPlayer) m_pPlayer->SetActive(false);
+
 	m_pFocusedTarget = nullptr;
 }
 

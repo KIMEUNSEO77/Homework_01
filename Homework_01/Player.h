@@ -60,7 +60,7 @@ private:
 	BoundingOrientedBox m_xmBoundingBox =
 		BoundingOrientedBox(
 			XMFLOAT3(0.0f, 0.0f, 0.0f),   // Center
-			XMFLOAT3(2.4f, 2.0f, 0.8f),   // Extents
+			XMFLOAT3(2.4f, 1.5f, 1.0f),   // Extents
 			XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) // Orientation
 		);
 

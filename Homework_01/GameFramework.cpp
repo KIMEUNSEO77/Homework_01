@@ -445,10 +445,17 @@ void CGameFramework::DrawHUD()
 {
 	if (!m_pScene) return;
 
-	// 게임 오버 상태면 게임 오버만 출력
+	// 게임 오버
 	if (m_pScene->IsGameOver())
 	{
 		DrawText(430, 300, TEXT("GAME OVER"), RGB(255, 50, 50), 72);
+		return;
+	}
+
+	// 게임 클리어
+	if (m_pScene->IsGameClear())
+	{
+		DrawText(400, 300, TEXT("GAME CLEAR"), RGB(50, 255, 50), 72);
 		return;
 	}
 
