@@ -445,6 +445,13 @@ void CGameFramework::DrawHUD()
 {
 	if (!m_pScene) return;
 
+	// 게임 오버 상태면 게임 오버만 출력
+	if (m_pScene->IsGameOver())
+	{
+		DrawText(430, 300, TEXT("GAME OVER"), RGB(255, 50, 50), 72);
+		return;
+	}
+
 	// 점수
 	TCHAR pstrScore[64];
 	_stprintf_s(pstrScore, 64, TEXT("Game Score : %d"), m_pScene->GetScore());

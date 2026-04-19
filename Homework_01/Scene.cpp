@@ -140,6 +140,15 @@ void CScene::ReleaseObjects()
 
 void CScene::Animate(float fElapsedTime)
 {
+	if (m_bGameOver) return;
+
+	// 플레이어 사망 체크
+	if (m_pPlayer && m_pPlayer->IsDead())
+	{
+		GameOver();
+		return;
+	}
+
 	for (CGameObject* pObject : m_Objects)
 	{
 		if (pObject && pObject->IsActive())
@@ -429,6 +438,7 @@ void CScene::CreateEnemy()
 	m_Objects.push_back(pEnemy);
 }
 
+// 게임 오버 처리
 void CScene::GameOver()
 {
 	m_bGameOver = true;
