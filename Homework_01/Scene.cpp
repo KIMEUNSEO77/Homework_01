@@ -429,6 +429,35 @@ void CScene::CreateEnemy()
 	m_Objects.push_back(pEnemy);
 }
 
+void CScene::GameOver()
+{
+	m_bGameOver = true;
+
+	// 일반 오브젝트 비활성화
+	for (CGameObject* pObject : m_Objects)
+	{
+		if (pObject) pObject->SetActive(false);
+	}
+
+	// 총알 비활성화
+	for (CBullet* pBullet : m_Bullets)
+	{
+		if (pBullet) pBullet->SetActive(false);
+	}
+
+	// 파편 비활성화
+	for (CFragment* pFragment : m_Fragments)
+	{
+		if (pFragment) pFragment->SetActive(false);
+	}
+
+	// 플레이어도 비활성화
+	if (m_pPlayer) m_pPlayer->SetActive(false);
+
+	// 조준 타겟 해제
+	m_pFocusedTarget = nullptr;
+}
+
 void CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
