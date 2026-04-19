@@ -108,11 +108,17 @@ public:
 	virtual void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID,
 		WPARAM wParam, LPARAM lParam) { }
 
+	void RenderDamageFlash(HDC hDCFrameBuffer, int width, int height);  // 플래쉬 효과 렌더링
+
 private:
 	// 피킹 관련
 	Ray GeneratePickingRay(int x, int y, CCamera* pCamera);
 	bool IntersectRaySphere(const Ray& ray, const BoundingSphere& sphere, float& fHitDistance);
 	CGameObject* PickObjectByRay(const Ray& ray, float* pfHitDistance = nullptr);
 	void FireBulletToTarget(CGameObject* pTarget);
+
+	// 플래쉬 효과
+	float m_fFlashTime = 0.0f;
+	float m_fFlashDuration = 0.2f;
 };
 

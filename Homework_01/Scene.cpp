@@ -228,7 +228,15 @@ void CScene::Animate(float fElapsedTime)
 		m_pFocusedTarget = nullptr;
 	}
 
+	// 현재 시간
 	m_fPlayTime += fElapsedTime;
+	// 플래쉬 효과 타이머
+	if (m_fFlashTime > 0.0f)
+	{
+		m_fFlashTime -= fElapsedTime;
+		if (m_fFlashTime < 0.0f)
+			m_fFlashTime = 0.0f;
+	}
 }
 
 void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
@@ -261,6 +269,9 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 	{
 		DrawScreenAxis(hDCFrameBuffer, m_pPlayer->m_xmf4x4World, 80, 80, 40.0f);
 	}
+
+	// 플래쉬 효과 렌더링
+	RenderDamageFlash(hDCFrameBuffer, 1280, 960);
 }
 
 // 총알 생성
@@ -310,6 +321,9 @@ void CScene::CheckBulletCollisions()
 				if (bulletSphere.Intersects(playerBox))
 				{
 					m_pPlayer->TakeDamage(10);
+
+					m_fFlashTime = m_fFlashDuration;  // 플래쉬 효과
+
 					pBullet->SetActive(false);
 					continue;
 				}
@@ -687,4 +701,15 @@ void CScene::CreateObject()
 	m_Objects.push_back(pObject);
 
 	pCubeMesh->Release();
+}
+
+// 플래쉬 효과 렌더링
+void CScene::RenderDamageFlash(HDC hDCFrameBuffer, int width, int height)
+{
+	if (m_fFlashTime <= 0.0f) return;
+
+	if (((int)(m_fFlashTime * 30)) % 2 == 0)
+	{
+		PatBlt(hDCFrameBuffer, 0, 0, width, height, WHITENESS);
+	}
 }
