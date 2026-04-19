@@ -142,8 +142,8 @@ void CScene::Animate(float fElapsedTime)
 {
 	if (m_bGameOver || m_bGameClear) return;
 
-	// 플레이어 사망 체크
-	if (m_pPlayer && m_pPlayer->IsDead())
+	// 플레이어 사망 또는 플레이 시간 초과 체크
+	if ((m_pPlayer && m_pPlayer->IsDead()) || m_fPlayTime >= 200.0f)
 	{
 		GameOver();
 		return;
