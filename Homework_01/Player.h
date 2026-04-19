@@ -56,6 +56,12 @@ private:
 	XMFLOAT3 m_xmf3FirstPersonOffset = XMFLOAT3(0.0f, 2.0f, -1.0f);
 	XMFLOAT3 m_xmf3ThirdPersonOffset = XMFLOAT3(0.0f, 5.0f, -15.0f);
 
+	// 플레이어 충돌 박스
+	BoundingOrientedBox m_xmBoundingBox =
+		BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f),
+			XMFLOAT3(2.0f, 1.5f, 4.0f),
+			XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+
 public:
 	XMFLOAT3 GetPosition() { return m_xmf3Position; }
 	XMFLOAT3 GetLookVector() { return m_xmf3Look; }
@@ -96,6 +102,10 @@ public:
 
 	void TakeDamage(int nDamage);
 	bool IsDead() const { return (m_nHP <= 0); }
+
+	// 충돌 박스
+	BoundingOrientedBox GetBoundingBox() const { return m_xmBoundingBox; }
+	void UpdateBoundingBox();
 };
 
 class CAirplanePlayer : public CPlayer
