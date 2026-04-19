@@ -288,9 +288,9 @@ void CScene::CheckBulletCollisions()
 		{
 			if (m_pPlayer && m_pPlayer->IsActive())
 			{
-				BoundingSphere playerSphere = m_pPlayer->GetBoundingSphere();
+				BoundingOrientedBox playerBox = m_pPlayer->GetBoundingBox();
 
-				if (bulletSphere.Intersects(playerSphere))
+				if (bulletSphere.Intersects(playerBox))
 				{
 					m_pPlayer->TakeDamage(10);   // 플레이어 데미지
 					pBullet->SetActive(false);   // 총알 제거
