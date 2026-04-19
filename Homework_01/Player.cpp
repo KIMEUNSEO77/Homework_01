@@ -236,7 +236,7 @@ void CAirplanePlayer::OnUpdateTransform()
 	XMStoreFloat4x4(&m_xmf4x4World,
 		XMMatrixMultiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f), XMLoadFloat4x4(&m_xmf4x4World)));
 
-	UpdateBoundingBox();
+	UpdateBoundingBox();  // 회전에 따라 충돌 박스 변경
 }
 
 // 플레이어가 nDamage 만큼의 피해를 입음
