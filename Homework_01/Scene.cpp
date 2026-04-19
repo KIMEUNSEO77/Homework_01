@@ -299,26 +299,46 @@ void CScene::CheckBulletCollisions()
 
 		BoundingSphere bulletSphere = pBullet->GetBoundingSphere();
 
-		// 적 총알, 플레이어 충돌 검사
+		// 적 총알
 		if (pBullet->GetBulletOwner() == BulletOwner::Enemy)
 		{
+			// 플레이어 충돌 검사
 			if (m_pPlayer && m_pPlayer->IsActive())
 			{
 				BoundingOrientedBox playerBox = m_pPlayer->GetBoundingBox();
 
 				if (bulletSphere.Intersects(playerBox))
 				{
-					m_pPlayer->TakeDamage(10);   // 플레이어 데미지
-					pBullet->SetActive(false);   // 총알 제거
-					continue;                    // 다음 총알 검사
+					m_pPlayer->TakeDamage(10);
+					pBullet->SetActive(false);
+					continue;
 				}
 			}
 
-			// 적 총알은 일반 오브젝트와는 충돌 처리 안 함
+			// 일반 오브젝트 충돌 검사
+			for (CGameObject* pTarget : m_Objects)
+			{
+				if (!pTarget || !pTarget->IsActive()) continue;
+
+				// 적은 무시
+				CEnemyObject* pEnemy = dynamic_cast<CEnemyObject*>(pTarget);
+				if (pEnemy) continue;
+
+				BoundingSphere targetSphere = pTarget->GetBoundingSphere();
+
+				if (bulletSphere.Intersects(targetSphere))
+				{
+					CreateFragments(pTarget->GetPosition(), pTarget->m_dwColor);
+
+					pBullet->SetActive(false);
+					pTarget->SetActive(false);
+					break;
+				}
+			}
 			continue;
 		}
 
-		// 플레이어 총알, 일반 오브젝트 충돌 검사
+		// 플레이어 총알
 		if (pBullet->GetBulletOwner() == BulletOwner::Player)
 		{
 			for (CGameObject* pTarget : m_Objects)
