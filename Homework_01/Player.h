@@ -58,9 +58,11 @@ private:
 
 	// 플레이어 충돌 박스
 	BoundingOrientedBox m_xmBoundingBox =
-		BoundingOrientedBox(XMFLOAT3(0.0f, 0.0f, 0.0f),
-			XMFLOAT3(2.0f, 1.5f, 4.0f),
-			XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+		BoundingOrientedBox(
+			XMFLOAT3(0.0f, 0.0f, 0.0f),   // Center
+			XMFLOAT3(2.0f, 1.5f, 4.0f),   // Extents
+			XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f) // Orientation
+		);
 
 public:
 	XMFLOAT3 GetPosition() { return m_xmf3Position; }

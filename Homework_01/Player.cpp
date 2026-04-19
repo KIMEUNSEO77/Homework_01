@@ -235,6 +235,8 @@ void CAirplanePlayer::OnUpdateTransform()
 
 	XMStoreFloat4x4(&m_xmf4x4World,
 		XMMatrixMultiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f), XMLoadFloat4x4(&m_xmf4x4World)));
+
+	UpdateBoundingBox();
 }
 
 // 플레이어가 nDamage 만큼의 피해를 입음
@@ -242,4 +244,28 @@ void CPlayer::TakeDamage(int nDamage)
 {
 	m_nHP -= nDamage;
 	if (m_nHP < 0) m_nHP = 0;
+}
+
+// 회전에 따라 충돌 박스 변경
+void CPlayer::UpdateBoundingBox()
+{
+	// 중심: 플레이어 위치
+	m_xmBoundingBox.Center = m_xmf3Position;
+
+	// 플레이어의 Right, Up, Look 축을 이용해 회전 행렬 생성
+	XMFLOAT3 right = Vector3Normalize(m_xmf3Right);
+	XMFLOAT3 up = Vector3Normalize(m_xmf3Up);
+	XMFLOAT3 look = Vector3Normalize(m_xmf3Look);
+
+	XMMATRIX rotation(
+		right.x, right.y, right.z, 0.0f,
+		up.x, up.y, up.z, 0.0f,
+		look.x, look.y, look.z, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f
+	);
+
+	XMVECTOR quat = XMQuaternionRotationMatrix(rotation);
+	quat = XMQuaternionNormalize(quat);
+
+	XMStoreFloat4(&m_xmBoundingBox.Orientation, quat);
 }
