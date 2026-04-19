@@ -45,6 +45,7 @@ private:
 	CGameObject* m_pFocusedTarget = nullptr;  // 현재 조준된 타겟
 
 	int m_nScore = 0;  // 현재 점수
+	bool m_bGameOver = false;  // 게임 오버 상태
 
 public:
 	// 게임 객체들을 생성하고 소멸
@@ -93,6 +94,8 @@ public:
 	void ResetScore() { m_nScore = 0; }
 
 	float m_fPlayTime = 0.0f;  // 게임 플레이 시간
+	bool IsGameOver() const { return m_bGameOver; }  // 게임 오버 상태
+	void GameOver();  // 게임 오버 처리
 
 	// 윈도우 메시지(키보드, 마우스)를 처리
 	virtual void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID,
