@@ -251,7 +251,7 @@ void CGameFramework::FrameAdvance()
 	if (m_pScene) m_pScene->Render(m_hDCFrameBuffer, pCamera);
 
 	// 플레이어(비행기)를 렌더링
-	if (m_pPlayer) m_pPlayer->Render(m_hDCFrameBuffer, pCamera);
+	if (m_pPlayer && m_pPlayer->IsActive()) m_pPlayer->Render(m_hDCFrameBuffer, pCamera);
 
 	// 미니 카메라 (플레이어 뒤를 보는 카메라)로 씬과 플레이어를 렌더링
 	RenderBackViewCamera();
