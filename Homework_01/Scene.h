@@ -22,17 +22,17 @@ public:
 	virtual ~CScene() {}
 
 private:
-	// 게임 객체들의 리스트
-	std::vector<CGameObject*> m_Objects;
+	std::vector<CGameObject*> m_Objects;  // 적과 일반 큐브를 포함한 게임 객체 리스트
+	CCubeMesh* m_pCubeMesh = NULL;       // 큐브 메쉬
 
 	CPlayer* m_pPlayer = nullptr;
 
 	std::vector<CBullet*> m_Bullets;  // 총알 리스트
+	CCubeMesh* m_pBulletMesh = NULL;     // 총알용 큐브 메쉬
 
 	CCubeMesh* m_pFragmentMesh = NULL;   // 파편용 작은 큐브 메쉬
 	std::vector<CFragment*> m_Fragments; // 파편 리스트
 
-	CCubeMesh* m_pEnemyMesh = NULL;      // 적 객체용 큐브 메쉬
 
 	// 적 객체 스폰 타이머
 	float m_fEnemySpawnElapsed = 0.0f;

@@ -84,13 +84,11 @@ XMFLOAT3 CScene::GetRandomPosition(float minX, float maxX, float minY, float max
 void CScene::BuildObjects()
 {
 	// 직육면체 메쉬를 생성
-	CCubeMesh* pCubeMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
+	m_pCubeMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
 
-	// 파편용 작은 큐브 메쉬도 생성
+	// 작은 파편용 큐브 메쉬와 총알용 큐브 메쉬 생성
 	m_pFragmentMesh = new CCubeMesh(0.8f, 0.8f, 0.8f);
-
-	// 적 객체용 큐브 메쉬도 생성
-	m_pEnemyMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
+	m_pBulletMesh = new CCubeMesh(2.0f, 2.0f, 2.0f);
 
 	const int nObjects = 5;
 
@@ -98,7 +96,7 @@ void CScene::BuildObjects()
 	{
 		CGameObject* pObject = new CGameObject();
 
-		pObject->SetMesh(pCubeMesh);
+		pObject->SetMesh(m_pCubeMesh);
 		pObject->SetColor(ColorUtils::GetRandomColor());
 
 		XMFLOAT3 pos = GetRandomPosition(-50.0f, 50.0f, -40.0f, 40.0f, -60.0f, 60.0f);
@@ -117,7 +115,7 @@ void CScene::BuildObjects()
 		m_Objects.push_back(pObject);
 	}
 
-	pCubeMesh->Release();
+	m_pCubeMesh->Release();
 }
 
 void CScene::ReleaseObjects()
@@ -279,10 +277,8 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position,
 	const XMFLOAT3& xmf3Direction,
 	DWORD dwColor, BulletOwner owner)
 {
-	CCubeMesh* pBulletMesh = new CCubeMesh(2.0f, 2.0f, 2.0f);
-
 	CBullet* pBullet = new CBullet();
-	pBullet->SetMesh(pBulletMesh);
+	pBullet->SetMesh(m_pBulletMesh);
 	pBullet->SetColor(dwColor);
 	pBullet->SetPosition(xmf3Position);
 	pBullet->SetDirection(xmf3Direction);
@@ -297,8 +293,6 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position,
 	pBullet->SetBulletOwner(owner);
 
 	m_Bullets.push_back(pBullet);
-
-	pBulletMesh->Release();
 }
 
 // 충돌 체크
@@ -456,7 +450,7 @@ void CScene::CreateEnemy()
 {
 	CEnemyObject* pEnemy = new CEnemyObject();
 
-	pEnemy->SetMesh(m_pEnemyMesh);
+	pEnemy->SetMesh(m_pCubeMesh);
 	pEnemy->SetColor(ColorUtils::GetRandomColor());
 
 	// 랜덤 위치 생성
@@ -674,14 +668,12 @@ XMFLOAT3 CScene::GetFireDirection() const
 	return XMFLOAT3(0.0f, 0.0f, 1.0f);
 }
 
-// 일반 큐브 생성
+// 추적용 일반 큐브 생성
 void CScene::CreateObject()
 {
-	CCubeMesh* pCubeMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
-
 	CChasingCube* pObject = new CChasingCube();
 
-	pObject->SetMesh(pCubeMesh);
+	pObject->SetMesh(m_pCubeMesh);
 	pObject->SetColor(ColorUtils::GetRandomColor());
 
 	XMFLOAT3 pos = GetRandomPosition(-60.0f, 60.0f, -60.0f, 60.0f, -60.0f, 60.0f);
@@ -699,8 +691,6 @@ void CScene::CreateObject()
 	pObject->SetChaseSpeed(2.0f);
 
 	m_Objects.push_back(pObject);
-
-	pCubeMesh->Release();
 }
 
 // 플래쉬 효과 렌더링
