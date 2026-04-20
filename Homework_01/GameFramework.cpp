@@ -194,7 +194,6 @@ void CGameFramework::ProcessInput()
 		if (!bKey1Pressed)
 		{
 			m_pPlayer->SetCameraMode(CameraMode::FirstPerson);
-			//m_pPlayer->SetCameraOffset(XMFLOAT3(0.0f, 1.5f, 2.0f));
 			bKey1Pressed = true;
 		}
 	}
@@ -208,7 +207,6 @@ void CGameFramework::ProcessInput()
 		if (!bKey3Pressed)
 		{
 			m_pPlayer->SetCameraMode(CameraMode::ThirdPerson);
-			//m_pPlayer->SetCameraOffset(XMFLOAT3(0.0f, 5.0f, -15.0f));
 			bKey3Pressed = true;
 		}
 	}
@@ -253,10 +251,10 @@ void CGameFramework::FrameAdvance()
 	// 플레이어(비행기)를 렌더링
 	if (m_pPlayer && m_pPlayer->IsActive()) m_pPlayer->Render(m_hDCFrameBuffer, pCamera);
 
-	// 미니 카메라 (플레이어 뒤를 보는 카메라)로 씬과 플레이어를 렌더링
+	// 미니 카메라로 씬과 플레이어를 렌더링
 	RenderBackViewCamera();
 
-	// 점수 출력
+	// UI 출력
 	DrawHUD();
 
 	// 렌더링을 한 화면(비트맵)을 클라이언트 영역으로 복사
@@ -272,7 +270,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT
 {
 	switch (nMessageID)
 	{
-		// 마우스 캡쳐를 하고 현재 마우스 위치를 가져옴
+		// 마우스 캡쳐, 현재 마우스 위치를 가져옴
 	case WM_RBUTTONDOWN:
 	case WM_LBUTTONDOWN:
 		::SetCapture(hWnd);
@@ -281,7 +279,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT
 		if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 
-		// 마우스 캡쳐를 해제
+		// 마우스 캡쳐 해제
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 		::ReleaseCapture();
@@ -349,28 +347,14 @@ void CGameFramework::UpdateBackViewCamera()
 {
 	if (!m_pBackViewCamera || !m_pPlayer) return;
 
-	// 플레이어 뒤쪽 + 약간 위
 	XMFLOAT3 playerPos = m_pPlayer->GetPosition();
 	XMFLOAT3 look = m_pPlayer->GetLookVector();
-	XMFLOAT3 up = m_pPlayer->m_xmf3Up;   // 접근 가능하면 그대로, 아니면 getter 사용
-	XMFLOAT3 right = m_pPlayer->m_xmf3Right;
+	XMFLOAT3 up = m_pPlayer->m_xmf3Up;
 
-	// 뒤쪽 오프셋 (플레이어 로컬 기준)
-	XMFLOAT3 offset(0.0f, 0.0f, 0.0f);
+	// 플레이어 위치에 미니 카메라 배치
+	XMFLOAT3 backCameraPos = playerPos;
 
-	XMMATRIX rotate;
-	rotate.r[0] = XMVectorSet(right.x, right.y, right.z, 0.0f);
-	rotate.r[1] = XMVectorSet(up.x, up.y, up.z, 0.0f);
-	rotate.r[2] = XMVectorSet(look.x, look.y, look.z, 0.0f);
-	rotate.r[3] = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
-
-	XMVECTOR xmvOffset = XMVector3TransformCoord(XMLoadFloat3(&offset), rotate);
-	XMVECTOR xmvCameraPos = XMVectorAdd(XMLoadFloat3(&playerPos), xmvOffset);
-
-	XMFLOAT3 backCameraPos;
-	XMStoreFloat3(&backCameraPos, xmvCameraPos);
-
-	// 플레이어와 반대 방향을 바라보도록
+	// 플레이어의 진행 방향 반대쪽을 바라보도록 설정
 	XMFLOAT3 lookAt(
 		backCameraPos.x - look.x,
 		backCameraPos.y - look.y,
@@ -378,7 +362,7 @@ void CGameFramework::UpdateBackViewCamera()
 	);
 
 	m_pBackViewCamera->SetLookAt(backCameraPos, lookAt, up);
-	m_pBackViewCamera->GenerateViewMatrix(); // 중요
+	m_pBackViewCamera->GenerateViewMatrix();
 }
 
 void CGameFramework::RenderBackViewCamera()
@@ -398,7 +382,8 @@ void CGameFramework::RenderBackViewCamera()
 
 	// 플레이어 뒤를 보는 카메라 갱신
 	UpdateBackViewCamera();
-	// 배경 테두리 먼저
+
+	// 미니 뷰포트 테두리
 	HPEN hPen = ::CreatePen(PS_SOLID, 2, RGB(255, 0, 255));
 	HPEN hOldPen = (HPEN)::SelectObject(m_hDCFrameBuffer, hPen);
 	HBRUSH hBrush = ::CreateSolidBrush(RGB(150, 150, 150));

@@ -19,12 +19,12 @@ void CEnemyObject::Animate(float fElapsedTime)
 	}
 }
 
-// 공격 위치 구하는 함수
+// 공격 위치 구하기
 XMFLOAT3 CEnemyObject::GetMuzzleWorldPosition() const
 {
 	XMFLOAT3 pos = GetPosition();
 
-	// Look 벡터 이용
+	// Look 벡터
 	XMFLOAT3 look = XMFLOAT3(
 		m_xmf4x4World._31,
 		m_xmf4x4World._32,
@@ -98,19 +98,22 @@ void CEnemyObject::UpdateLookAtPlayer()
 	XMFLOAT3 xmf3PlayerPosition = m_pPlayer->GetPosition();
 	XMFLOAT3 xmf3MyPosition = GetPosition();
 
+	// Look 벡터 계산 (플레이어 위치 - 적 위치)
 	XMFLOAT3 xmf3Look(
 		xmf3PlayerPosition.x - xmf3MyPosition.x,
 		xmf3PlayerPosition.y - xmf3MyPosition.y,
 		xmf3PlayerPosition.z - xmf3MyPosition.z
 	);
 
+	// Look 벡터 정규화
 	XMVECTOR xmvLook = XMLoadFloat3(&xmf3Look);
 	xmvLook = XMVector3Normalize(xmvLook);
 	XMStoreFloat3(&xmf3Look, xmvLook);
 
-	// 월드 업 벡터
+	// World Up벡터
 	XMFLOAT3 xmf3Up(0.0f, 1.0f, 0.0f);
 
+	// Up벡터, Look 벡터와 수직인 Right 벡터 계산
 	// Right = Up x Look
 	XMVECTOR xmvRight = XMVector3Cross(XMLoadFloat3(&xmf3Up), XMLoadFloat3(&xmf3Look));
 	xmvRight = XMVector3Normalize(xmvRight);
@@ -118,7 +121,7 @@ void CEnemyObject::UpdateLookAtPlayer()
 	XMFLOAT3 xmf3Right;
 	XMStoreFloat3(&xmf3Right, xmvRight);
 
-	// 다시 Up 보정 = Look x Right
+	// Look벡터, Right벡터와 수직인 Up벡터 계산
 	XMVECTOR xmvNewUp = XMVector3Cross(XMLoadFloat3(&xmf3Look), XMLoadFloat3(&xmf3Right));
 	xmvNewUp = XMVector3Normalize(xmvNewUp);
 

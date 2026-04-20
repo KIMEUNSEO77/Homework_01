@@ -6,7 +6,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 
-// 카메라 모드: 1인칭 시점(First Person)과 3인칭 시점(Third Person)
+// 카메라 모드
 enum class CameraMode
 {
 	FirstPerson,
@@ -21,7 +21,7 @@ public:
 	virtual ~CPlayer() { if (m_pCamera) delete m_pCamera; }
 	
 public:
-	// 플레이어의 위치 벡터, x-축(Right), y-축(Up), z-축(Look) 벡터
+	// 플레이어의 위치 벡터, x축(Right), y축(Up), z축(Look) 벡터
 	XMFLOAT3 m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
 	XMFLOAT3 m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
@@ -36,7 +36,7 @@ public:
 	// 플레이어에 작용하는 마찰력
 	float m_fFriction = 125.0f;
 
-	// 플레이어가 로컬 x-축(Right), y-축(Up), z-축(Look)으로 얼마만큼 회전했는가
+	// 플레이어가 로컬 x축(Right), y축(Up), z축(Look)으로 얼마만큼 회전했는가
 	float m_fPitch = 0.0f;
 	float m_fYaw = 0.0f;
 	float m_fRoll = 0.0f;
@@ -56,7 +56,7 @@ private:
 	XMFLOAT3 m_xmf3FirstPersonOffset = XMFLOAT3(0.0f, 2.0f, -1.0f);
 	XMFLOAT3 m_xmf3ThirdPersonOffset = XMFLOAT3(0.0f, 5.0f, -15.0f);
 
-	// 플레이어 충돌 박스
+	// 플레이어 OBB
 	BoundingOrientedBox m_xmBoundingBox =
 		BoundingOrientedBox(
 			XMFLOAT3(0.0f, 0.0f, 0.0f),   // Center

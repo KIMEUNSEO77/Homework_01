@@ -38,7 +38,7 @@ void CPlayer::SetCameraOffset(const XMFLOAT3& xmf3CameraOffset)
 	m_pCamera->GenerateViewMatrix();
 }
 
-// 플레이어의 위치를 변경하는 함수
+// 플레이어의 위치를 변경
 // 플레이어의 위치는 기본적으로 사용자가 플레이어를 이동하기 위한 키보드를 누를 때 변경됨
 // 플레이어의 이동 방향(dwDirection)에 따라 플레이어를 fDistance 만큼 이동
 void CPlayer::Move(DWORD dwDirection, float fDistance)
@@ -47,7 +47,6 @@ void CPlayer::Move(DWORD dwDirection, float fDistance)
 	{
 		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 
-		// 화살표 키 ‘↑’를 누르면 로컬 z-축 방향으로 이동(전진). ‘↓’를 누르면 반대 방향으로 이동
 		if (dwDirection & DIR_FORWARD) XMStoreFloat3(&xmf3Shift,
 			XMVectorAdd(XMLoadFloat3(&xmf3Shift),
 				XMVectorScale(XMLoadFloat3(&m_xmf3Look), fDistance)));
@@ -55,7 +54,6 @@ void CPlayer::Move(DWORD dwDirection, float fDistance)
 			XMVectorAdd(XMLoadFloat3(&xmf3Shift),
 				XMVectorScale(XMLoadFloat3(&m_xmf3Look), -fDistance)));
 
-		// 화살표 키 ‘→’를 누르면 로컬 x-축 방향으로 이동. ‘←’를 누르면 반대 방향으로 이동
 		if (dwDirection & DIR_RIGHT) XMStoreFloat3(&xmf3Shift,
 			XMVectorAdd(XMLoadFloat3(&xmf3Shift),
 				XMVectorScale(XMLoadFloat3(&m_xmf3Right), fDistance)));
@@ -63,7 +61,6 @@ void CPlayer::Move(DWORD dwDirection, float fDistance)
 			XMVectorAdd(XMLoadFloat3(&xmf3Shift),
 				XMVectorScale(XMLoadFloat3(&m_xmf3Right), -fDistance)));
 
-		// ‘Page Up’을 누르면 로컬 y-축 방향으로 이동. ‘Page Down’을 누르면 반대 방향으로 이동
 		if (dwDirection & DIR_UP) XMStoreFloat3(&xmf3Shift,
 			XMVectorAdd(XMLoadFloat3(&xmf3Shift),
 				XMVectorScale(XMLoadFloat3(&m_xmf3Up), fDistance)));
@@ -78,7 +75,6 @@ void CPlayer::Move(DWORD dwDirection, float fDistance)
 
 void CPlayer::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 {
-	// bUpdateVelocity가 참이면 플레이어를 이동하지 않고 속도 벡터를 변경
 	if (bUpdateVelocity)
 	{
 		// 플레이어의 속도 벡터를 xmf3Shift 벡터만큼 변경
@@ -102,7 +98,7 @@ void CPlayer::Move(float x, float y, float z)
 }
 
 
-// 플레이어를 로컬 x-축, y-축, z-축을 중심으로 회전
+// 플레이어를 로컬 x축, y축, z축을 중심으로 회전
 void CPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	// 카메라를 x, y, z 만큼 회전. 플레이어를 회전하면 카메라가 회전
@@ -139,8 +135,8 @@ void CPlayer::Rotate(float fPitch, float fYaw, float fRoll)
 			XMVector3TransformNormal(XMLoadFloat3(&m_xmf3Right), xmmtxRotate));
 	}
 
-	// 회전으로 인해 플레이어의 로컬 x-축, y-축, z-축이 서로 직교하지 않을 수 있으므로 
-	// z-축(Look 벡터)을 기준으로 하여 서로 직교하고 단위벡터가 되도록 함
+	// 회전으로 인해 플레이어의 로컬 x축, y축, z축이 서로 직교하지 않을 수 있으므로 
+	// z축(Look 벡터)을 기준으로 하여 서로 직교하고 단위벡터가 되도록 함
 	XMVECTOR xmvLook = XMVector3Normalize(XMLoadFloat3(&m_xmf3Look));
 	XMVECTOR xmvUp = XMVector3Normalize(XMLoadFloat3(&m_xmf3Up));
 	XMVECTOR xmvRight = XMVector3Normalize(XMVector3Cross(xmvUp, xmvLook));
@@ -236,20 +232,19 @@ void CAirplanePlayer::OnUpdateTransform()
 	XMStoreFloat4x4(&m_xmf4x4World,
 		XMMatrixMultiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0f, 0.0f), XMLoadFloat4x4(&m_xmf4x4World)));
 
-	UpdateBoundingBox();  // 회전에 따라 충돌 박스 변경
+	UpdateBoundingBox();  // 회전에 따라 OOBB 변경
 }
 
-// 플레이어가 nDamage 만큼의 피해를 입음
 void CPlayer::TakeDamage(int nDamage)
 {
 	m_nHP -= nDamage;
 	if (m_nHP < 0) m_nHP = 0;
 }
 
-// 회전에 따라 충돌 박스 변경
+// 회전에 따라 OOBB 변경
 void CPlayer::UpdateBoundingBox()
 {
-	// 중심: 플레이어 위치
+	// 중심은 플레이어 위치
 	m_xmBoundingBox.Center = m_xmf3Position;
 
 	// 플레이어의 Right, Up, Look 축을 이용해 회전 행렬 생성

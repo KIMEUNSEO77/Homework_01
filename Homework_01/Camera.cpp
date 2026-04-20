@@ -51,7 +51,7 @@ void CCamera::SetLookAt(XMFLOAT3& xmf3Position, XMFLOAT3& xmf3LookAt, XMFLOAT3& 
 	XMStoreFloat4x4(&m_xmf4x4View,
 		XMMatrixLookAtLH(XMLoadFloat3(&m_xmf3Position), XMLoadFloat3(&xmf3LookAt), XMLoadFloat3(&xmf3Up)));
 
-	// 카메라 변환 행렬에서 카메라의 x-축, y-축, z-축을 구함
+	// 카메라 변환 행렬에서 카메라의 x축, y축, z축을 구함
 	XMVECTORF32 xmf32vRight = { m_xmf4x4View._11, m_xmf4x4View._21, m_xmf4x4View._31, 0.0f };
 	XMVECTORF32 xmf32vUp = { m_xmf4x4View._12, m_xmf4x4View._22, m_xmf4x4View._32, 0.0f };
 	XMVECTORF32 xmf32vLook = { m_xmf4x4View._13, m_xmf4x4View._23, m_xmf4x4View._33, 0.0f };
@@ -101,7 +101,7 @@ void CCamera::Move(float x, float y, float z)
 	Move(XMFLOAT3(x, y, z));
 }
 
-// 카메라의 로컬 x-축(Right), y-축(Up), z-축(Look)을 기준으로 회전하는 함수
+// 카메라의 로컬 x축(Right), y축(Up), z축(Look)을 기준으로 회전
 void CCamera::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	if (fPitch != 0.0f)
@@ -109,7 +109,7 @@ void CCamera::Rotate(float fPitch, float fYaw, float fRoll)
 		XMMATRIX xmmtxRotate =
 			XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(fPitch));
 
-		// 카메라의 로컬 x-축(Right)을 중심으로 회전하는 행렬로 y-축(Up), z-축(Look)을 회전
+		// 카메라의 로컬 x축(Right)을 중심으로 회전하는 행렬로 y축(Up), z축(Look)을 회전
 		XMStoreFloat3(&m_xmf3Look,
 			XMVector3TransformNormal(XMLoadFloat3(&m_xmf3Look), xmmtxRotate));
 		XMStoreFloat3(&m_xmf3Up,
@@ -139,7 +139,7 @@ void CCamera::Rotate(float fPitch, float fYaw, float fRoll)
 
 void CCamera::Update(CPlayer* pPlayer, XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 {
-	// 플레이어의 로컬 x-축, y-축, z-축 벡터로부터 회전 행렬(플레이어와 같은 방향을 나타내는 행렬)을 생성
+	// 플레이어의 로컬 x축, y축, z축 벡터로부터 회전 행렬(플레이어와 같은 방향을 나타내는 행렬)을 생성
 		XMMATRIX xmmtx4Rotate;
 	xmmtx4Rotate.r[0] = XMVectorSet(pPlayer->m_xmf3Right.x,
 		pPlayer->m_xmf3Right.y, pPlayer->m_xmf3Right.z, 0.0f);
@@ -169,9 +169,9 @@ void CCamera::Update(CPlayer* pPlayer, XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 	float fTimeLagScale = fTimeElapsed * 4.0f;
 	float fDistance = fLength * fTimeLagScale;
 
+	// 1인칭
 	if (pPlayer->GetCameraMode() == CameraMode::FirstPerson)
 	{
-		// 1인칭은 랙 없이 바로 붙이는 걸 추천
 		XMStoreFloat3(&m_xmf3Position, xmvNewPosition);
 
 		XMFLOAT3 xmf3CameraLookAt(
@@ -182,6 +182,7 @@ void CCamera::Update(CPlayer* pPlayer, XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 
 		SetLookAt(xmf3CameraLookAt, pPlayer->m_xmf3Up);
 	}
+	// 3인칭
 	else
 	{
 		if (fDistance > fLength) fDistance = fLength;

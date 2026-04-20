@@ -6,9 +6,30 @@
 #include "Scene.h"
 #include "GraphicsPipeline.h"
 
-#include <print>
+// 랜덤 색상 생성하는 유틸리티 네임스페이스
+namespace ColorUtils
+{
+	COLORREF GetRandomColor()
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		static std::uniform_int_distribution<int> dis(0, 255);
 
-// 축 그리는 함수 (2D)
+		return RGB(dis(gen), dis(gen), dis(gen));
+	}
+}
+
+// 랜덤 위치 만들기
+XMFLOAT3 CScene::GetRandomPosition(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+{
+	float x = minX + static_cast<float>(rand()) / RAND_MAX * (maxX - minX);
+	float y = minY + static_cast<float>(rand()) / RAND_MAX * (maxY - minY);
+	float z = minZ + static_cast<float>(rand()) / RAND_MAX * (maxZ - minZ);
+
+	return XMFLOAT3(x, y, z);
+}
+
+// 축 그리는 함수
 void DrawLine2D(HDC hDCFrameBuffer, int x0, int y0, int x1, int y1, COLORREF color)
 {
 	HPEN hPen = ::CreatePen(PS_SOLID, 0, color);
@@ -40,50 +61,9 @@ void DrawScreenAxis(HDC hDCFrameBuffer, const XMFLOAT4X4& world, int centerX, in
 	DrawAxis(look, RGB(0, 0, 255));   // Z
 }
 
-// 원 그리는 함수 (2D)
-void DrawCircle2D(HDC hDCFrameBuffer, int cx, int cy, int radius, COLORREF color)
-{
-	HPEN hPen = ::CreatePen(PS_SOLID, 1, color);
-	HPEN hOldPen = (HPEN)::SelectObject(hDCFrameBuffer, hPen);
-
-	HBRUSH hBrush = (HBRUSH)::GetStockObject(NULL_BRUSH);
-	HBRUSH hOldBrush = (HBRUSH)::SelectObject(hDCFrameBuffer, hBrush);
-
-	::Ellipse(hDCFrameBuffer, cx - radius, cy - radius, cx + radius, cy + radius);
-
-	::SelectObject(hDCFrameBuffer, hOldBrush);
-	::SelectObject(hDCFrameBuffer, hOldPen);
-	::DeleteObject(hPen);
-}
-
-// 랜덤 색상 생성하는 유틸리티 네임스페이스
-namespace ColorUtils
-{
-	COLORREF GetRandomColor()
-	{
-		// C++11 random 라이브러리 사용 (static으로 두어 매번 생성하지 않도록 함)
-		static std::random_device rd;
-		static std::mt19937 gen(rd());
-		static std::uniform_int_distribution<int> dis(0, 255);
-
-		// R, G, B 각각 0~255 사이의 랜덤 값 반환
-		return RGB(dis(gen), dis(gen), dis(gen));
-	}
-}
-
-// 랜덤 위치 만들기
-XMFLOAT3 CScene::GetRandomPosition(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
-{
-	float x = minX + static_cast<float>(rand()) / RAND_MAX * (maxX - minX);
-	float y = minY + static_cast<float>(rand()) / RAND_MAX * (maxY - minY);
-	float z = minZ + static_cast<float>(rand()) / RAND_MAX * (maxZ - minZ);
-
-	return XMFLOAT3(x, y, z);
-}
-
 void CScene::BuildObjects()
 {
-	// 직육면체 메쉬를 생성
+	// 직육면체 메쉬 생성
 	m_pCubeMesh = new CCubeMesh(6.0f, 6.0f, 6.0f);
 
 	// 작은 파편용 큐브 메쉬와 총알용 큐브 메쉬 생성
@@ -124,7 +104,6 @@ void CScene::ReleaseObjects()
 		delete pObject;
 	m_Objects.clear();
 
-	// 총알도 소멸 처리
 	for (CBullet* pBullet : m_Bullets)
 		delete pBullet;
 	m_Bullets.clear();
@@ -160,7 +139,7 @@ void CScene::Animate(float fElapsedTime)
 			pObject->Animate(fElapsedTime);
 	}
 
-	// Enemy 발사 처리
+	// Enemy 총알 발사
 	for (CGameObject* pObject : m_Objects)
 	{
 		if (!pObject || !pObject->IsActive()) continue;
@@ -213,7 +192,6 @@ void CScene::Animate(float fElapsedTime)
 
 	// 큐브 스폰 타이머
 	m_fObjectSpawnElapsed += fElapsedTime;
-
 	while (m_fObjectSpawnElapsed >= m_fObjectSpawnInterval)
 	{
 		CreateObject();
@@ -228,6 +206,7 @@ void CScene::Animate(float fElapsedTime)
 
 	// 현재 시간
 	m_fPlayTime += fElapsedTime;
+
 	// 플래쉬 효과 타이머
 	if (m_fFlashTime > 0.0f)
 	{
@@ -248,14 +227,14 @@ void CScene::Render(HDC hDCFrameBuffer, CCamera* pCamera)
 			pObject->Render(hDCFrameBuffer, pCamera);
 	}
 
-	// 총알도 렌더링 처리
+	// 총알 렌더링
 	for (CBullet* pBullet : m_Bullets)
 	{
 		if (pBullet && pBullet->IsActive())
 			pBullet->Render(hDCFrameBuffer, pCamera);
 	}
 
-	// 파편도 렌더링 처리
+	// 파편 렌더링
 	for (CFragment* pFragment : m_Fragments)
 	{
 		if (pFragment && pFragment->IsActive())
@@ -288,7 +267,7 @@ void CScene::CreateBullet(const XMFLOAT3& xmf3Position,
 	pBullet->SetVerticalVelocity(10.0f); // 처음에 위로 살짝 뜨기
 	pBullet->SetGravity(-20.0f);         // 중력
 
-	pBullet->SetCollisionRadius(0.5f);  // 총알 반지름 설정
+	pBullet->SetCollisionRadius(0.5f);  
 
 	pBullet->SetBulletOwner(owner);
 
@@ -381,9 +360,9 @@ void CScene::RemoveDeadBullets()
 			if (!pBullet->IsActive())
 			{
 				delete pBullet; // 메모리 해제
-				return true;    // 제거 대상
+				return true;    // 제거
 			}
-			return false;       // 유지 대상
+			return false;       
 		}), m_Bullets.end());
 }
 
@@ -459,15 +438,14 @@ void CScene::CreateEnemy()
 
 	pEnemy->SetCollisionRadius(3.5f);
 
-	// 플레이어 연결 (추적용)
 	pEnemy->SetPlayer(m_pPlayer);
 
 	// 공격 시간 설정 
-	float interval = 2.0f + (rand() % 401) / 100.0f; // 2.0 ~ 6.0
+	float interval = 2.0f + (rand() % 401) / 100.0f;
 	pEnemy->SetAttackInterval(interval);
 
 	// 공격 타이머 설정
-	float startOffset = (rand() % 600) / 100.0f; // 0 ~ 6초
+	float startOffset = (rand() % 600) / 100.0f;
 	pEnemy->SetAttackElapsed(startOffset);
 
 	m_Objects.push_back(pEnemy);
@@ -658,10 +636,11 @@ XMFLOAT3 CScene::GetFireDirection() const
 		XMFLOAT3 targetPosition = m_pFocusedTarget->GetPosition();
 
 		XMFLOAT3 fireDirection = Vector3Subtract(targetPosition, firePosition);
+
 		return Vector3Normalize(fireDirection);
 	}
 
-	// 락온 대상이 없으면 기존처럼 전방 발사
+	// 조준 대상이 없으면 앞으로 발사
 	if (m_pPlayer)
 		return m_pPlayer->GetLookVector();
 

@@ -26,7 +26,6 @@ void CBullet::SetRange(float fRange)
     m_fRange = fRange;
 }
 
-// 포물선용
 void CBullet::SetVerticalVelocity(float fVelocity)
 {
     m_fVerticalVelocity = fVelocity;

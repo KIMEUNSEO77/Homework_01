@@ -8,7 +8,7 @@
 #include "Fragment.h"
 #include "EnemyObject.h"
 
-// 마우스 피킹을 위한 Ray 구조체
+// 마우스 피킹 Ray 구조체
 struct Ray
 {
 	XMFLOAT3 origin;

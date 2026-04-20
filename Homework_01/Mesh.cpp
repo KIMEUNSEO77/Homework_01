@@ -56,28 +56,12 @@ void Draw2DLine(HDC hDCFrameBuffer, XMFLOAT3& f3PreviousProject, XMFLOAT3& f3Cur
 	::LineTo(hDCFrameBuffer, (long)f3Current.x, (long)f3Current.y);
 }
 
-// 면으로 그리는 함수
-float EdgeFunction(const XMFLOAT3& a, const XMFLOAT3& b, float x, float y)
-{
-	return (x - a.x) * (b.y - a.y) - (y - a.y) * (b.x - a.x);
-}
-
-bool IsPointInTriangle(float x, float y, const XMFLOAT3& v0, const XMFLOAT3& v1, const XMFLOAT3& v2)
-{
-	float e0 = EdgeFunction(v0, v1, x, y);
-	float e1 = EdgeFunction(v1, v2, x, y);
-	float e2 = EdgeFunction(v2, v0, x, y);
-
-	return ((e0 >= 0.0f) && (e1 >= 0.0f) && (e2 >= 0.0f)) ||
-		((e0 <= 0.0f) && (e1 <= 0.0f) && (e2 <= 0.0f));
-}
-
 void FillTriangle2D(HDC hDCFrameBuffer,
 	const XMFLOAT3& f3Projected0,
 	const XMFLOAT3& f3Projected1,
 	const XMFLOAT3& f3Projected2)
 {
-	// 투영 좌표계 -> 화면 좌표계
+	// 투영 좌표계를 화면 좌표계로 변환
 	XMFLOAT3 v0 = CGraphicsPipeline::ScreenTransform(f3Projected0);
 	XMFLOAT3 v1 = CGraphicsPipeline::ScreenTransform(f3Projected1);
 	XMFLOAT3 v2 = CGraphicsPipeline::ScreenTransform(f3Projected2);
@@ -89,8 +73,6 @@ void FillTriangle2D(HDC hDCFrameBuffer,
 		{ (LONG)std::round(v2.x), (LONG)std::round(v2.y) }
 	};
 
-	// 내부에서 펜과 브러시를 덮어씌우는 코드 모두 제거
-	// 현재 DC에 이미 설정되어 있는 펜과 브러시를 그대로 사용
 	Polygon(hDCFrameBuffer, pts, 3);
 }
 
@@ -112,8 +94,6 @@ void CMesh::Render(HDC hDCFrameBuffer)
 			pProjected[i] = CGraphicsPipeline::Project(pVertices[i].m_xmf3Position);
 		}
 
-		// triangle fan 방식:
-		// (0,1,2), (0,2,3), (0,3,4), ...
 		for (int i = 1; i < nVertices - 1; i++)
 		{
 			XMFLOAT3 f3Projected0 = pProjected[0];
@@ -135,7 +115,7 @@ void CMesh::Render(HDC hDCFrameBuffer)
 				(-1.0f <= f3Projected2.y) && (f3Projected2.y <= 1.0f) &&
 				(0.0f <= f3Projected2.z) && (f3Projected2.z <= 1.0f);
 
-			// 삼각형 3점이 전부 화면 안에 있을 때만 채움
+			// 삼각형 3점이 모두 화면 안에 있을 때만
 			if (bInside0 && bInside1 && bInside2)
 			{
 				FillTriangle2D(hDCFrameBuffer,
